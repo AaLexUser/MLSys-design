@@ -1,0 +1,31 @@
+minimum_pre_commit_version: "4.0.0"
+exclude: ^(\.agents/|docs/agents/)
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=1024]
+      - id: detect-private-key
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.3
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/facebook/pyrefly-pre-commit
+    rev: 1.4.0
+    hooks:
+      - id: pyrefly-check
+        name: pyrefly (type checking)
+        pass_filenames: false
+        additional_dependencies: [pyyaml, types-pyyaml]
