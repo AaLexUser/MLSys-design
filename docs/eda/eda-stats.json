@@ -1,0 +1,967 @@
+{
+  "baseline": {
+    "all_completed": {
+      "behavior": {
+        "mcp": 46,
+        "native_without_mcp": 22,
+        "no_recorded_calls": 2,
+        "search_only": 1
+      },
+      "input_tokens": {
+        "max": 103777,
+        "median": 16993,
+        "min": 167,
+        "n": 71,
+        "p90": 43946.0
+      },
+      "n": 71,
+      "output_tokens": {
+        "max": 6970,
+        "median": 307,
+        "min": 48,
+        "n": 71,
+        "p90": 1109.0
+      },
+      "reasoning_tokens": {
+        "max": 26578,
+        "median": 350,
+        "min": 31,
+        "n": 71,
+        "p90": 1629.0
+      },
+      "seconds": {
+        "max": 695.1,
+        "median": 26.1,
+        "min": 5.9,
+        "n": 71,
+        "p90": 110.1
+      }
+    },
+    "called_servers_failed_in_probe": [
+      {
+        "question_id": "Q194",
+        "server": "kospi-kosdaq"
+      },
+      {
+        "question_id": "Q291",
+        "server": "alphavantage"
+      },
+      {
+        "question_id": "Q292",
+        "server": "alphavantage"
+      },
+      {
+        "question_id": "Q293",
+        "server": "alphavantage"
+      },
+      {
+        "question_id": "Q294",
+        "server": "alphavantage"
+      },
+      {
+        "question_id": "Q295",
+        "server": "alphavantage"
+      },
+      {
+        "question_id": "Q296",
+        "server": "alphavantage"
+      },
+      {
+        "question_id": "Q297",
+        "server": "alphavantage"
+      },
+      {
+        "question_id": "Q304",
+        "server": "alphavantage"
+      }
+    ],
+    "calls_beyond_annotation": [
+      {
+        "annotated": [
+          "paper_search_server"
+        ],
+        "extra_called": [
+          "arxiv-mcp-server"
+        ],
+        "question_id": "Q81"
+      },
+      {
+        "annotated": [
+          "paper_search_server"
+        ],
+        "extra_called": [
+          "arxiv-mcp-server"
+        ],
+        "question_id": "Q154"
+      },
+      {
+        "annotated": [
+          "paper_search_server"
+        ],
+        "extra_called": [
+          "arxiv-mcp-server"
+        ],
+        "question_id": "Q163"
+      },
+      {
+        "annotated": [
+          "paper_search_server"
+        ],
+        "extra_called": [
+          "arxiv-mcp-server"
+        ],
+        "question_id": "Q167"
+      },
+      {
+        "annotated": [
+          "yahoo-finance"
+        ],
+        "extra_called": [
+          "alphavantage"
+        ],
+        "question_id": "Q291"
+      },
+      {
+        "annotated": [
+          "yahoo-finance"
+        ],
+        "extra_called": [
+          "alphavantage"
+        ],
+        "question_id": "Q292"
+      },
+      {
+        "annotated": [
+          "yahoo-finance"
+        ],
+        "extra_called": [
+          "alphavantage"
+        ],
+        "question_id": "Q293"
+      },
+      {
+        "annotated": [
+          "yahoo-finance"
+        ],
+        "extra_called": [
+          "alphavantage"
+        ],
+        "question_id": "Q294"
+      },
+      {
+        "annotated": [
+          "yahoo-finance"
+        ],
+        "extra_called": [
+          "alphavantage"
+        ],
+        "question_id": "Q295"
+      },
+      {
+        "annotated": [
+          "yahoo-finance"
+        ],
+        "extra_called": [
+          "alphavantage"
+        ],
+        "question_id": "Q296"
+      },
+      {
+        "annotated": [
+          "yahoo-finance"
+        ],
+        "extra_called": [
+          "alphavantage"
+        ],
+        "question_id": "Q297"
+      },
+      {
+        "annotated": [
+          "yahoo-finance"
+        ],
+        "extra_called": [
+          "alphavantage"
+        ],
+        "question_id": "Q304"
+      }
+    ],
+    "result_sources": {
+      "baseline-glm-results.jsonl": {
+        "n": 93,
+        "status": {
+          "excluded": 38,
+          "ok": 54,
+          "unrunnable": 1
+        }
+      },
+      "baseline-glm-sens-results.jsonl": {
+        "n": 37,
+        "status": {
+          "excluded": 15,
+          "ok": 17,
+          "unrunnable": 5
+        }
+      }
+    },
+    "scored_stories_completed": {
+      "behavior": {
+        "mcp": 36,
+        "native_without_mcp": 18,
+        "no_recorded_calls": 1,
+        "search_only": 1
+      },
+      "input_tokens": {
+        "max": 103777,
+        "median": 16940.5,
+        "min": 167,
+        "n": 56,
+        "p90": 38543.0
+      },
+      "n": 56,
+      "output_tokens": {
+        "max": 6970,
+        "median": 325.0,
+        "min": 48,
+        "n": 56,
+        "p90": 1078.5
+      },
+      "reasoning_tokens": {
+        "max": 23057,
+        "median": 314.5,
+        "min": 31,
+        "n": 56,
+        "p90": 1340.5
+      },
+      "seconds": {
+        "max": 695.1,
+        "median": 24.55,
+        "min": 5.9,
+        "n": 56,
+        "p90": 92.4
+      }
+    },
+    "scored_story_ids_without_completed_run": [
+      "Q224",
+      "Q226"
+    ],
+    "scores_by_source": {
+      "baseline-glm-sens-scores.jsonl": {
+        "fail": 0,
+        "methods": {
+          "llm_as_a_judge": 17
+        },
+        "n": 17,
+        "null_ids": [
+          "Q291",
+          "Q292",
+          "Q293",
+          "Q294",
+          "Q295",
+          "Q296",
+          "Q297",
+          "Q304"
+        ],
+        "pass": 9,
+        "pass_scored_story": 6,
+        "provenance_has_session_id": false,
+        "reference_dates": [
+          "2026-11-14"
+        ],
+        "valid": 9,
+        "valid_scored_story": 6
+      },
+      "smoke-glm-scores.jsonl": {
+        "fail": 1,
+        "methods": {
+          "eval_script": 1,
+          "llm_as_a_judge": 4
+        },
+        "n": 5,
+        "null_ids": [],
+        "pass": 4,
+        "pass_scored_story": 4,
+        "provenance_has_session_id": false,
+        "reference_dates": [],
+        "valid": 5,
+        "valid_scored_story": 4
+      }
+    },
+    "source_tasks_without_any_result": [
+      "Q224",
+      "Q225",
+      "Q226",
+      "Q316",
+      "Q323",
+      "Q325",
+      "Q326",
+      "Q327",
+      "Q328",
+      "Q329",
+      "Q330",
+      "Q331",
+      "Q333",
+      "Q349",
+      "Q353",
+      "Q357",
+      "Q358",
+      "Q362",
+      "Q364",
+      "Q365",
+      "Q366",
+      "Q367",
+      "Q368",
+      "Q369",
+      "Q378",
+      "Q379",
+      "Q380",
+      "Q381",
+      "Q382",
+      "Q383",
+      "Q385",
+      "Q386",
+      "Q387"
+    ],
+    "stories_completed": {
+      "behavior": {
+        "mcp": 37,
+        "native_without_mcp": 18,
+        "no_recorded_calls": 1,
+        "search_only": 1
+      },
+      "input_tokens": {
+        "max": 103777,
+        "median": 16993,
+        "min": 167,
+        "n": 57,
+        "p90": 38139.4
+      },
+      "n": 57,
+      "output_tokens": {
+        "max": 6970,
+        "median": 307,
+        "min": 48,
+        "n": 57,
+        "p90": 1072.4
+      },
+      "reasoning_tokens": {
+        "max": 23057,
+        "median": 322,
+        "min": 31,
+        "n": 57,
+        "p90": 1308.8
+      },
+      "seconds": {
+        "max": 695.1,
+        "median": 25.5,
+        "min": 5.9,
+        "n": 57,
+        "p90": 88.86
+      }
+    },
+    "story_ids_without_mcp": [
+      "Q131",
+      "Q132",
+      "Q150",
+      "Q155",
+      "Q170",
+      "Q171",
+      "Q172",
+      "Q173",
+      "Q174",
+      "Q175",
+      "Q176",
+      "Q192",
+      "Q193",
+      "Q22",
+      "Q253",
+      "Q87",
+      "Q88",
+      "Q89",
+      "Q91",
+      "Q92"
+    ]
+  },
+  "cohorts": {
+    "covered_but_not_scored": [
+      "Q200"
+    ],
+    "defects": {
+      "Q121": "reference hour pillar is wrong for the stated birth time",
+      "Q162": "reference astronomy image does not match the stated date",
+      "Q200": "question asks for August 2025 trading days, reference is for April 2025"
+    },
+    "excluded_by_server": {
+      "12306-mcp": 7,
+      "3rd_party_mcp_server_shuidi": 2,
+      "amap-maps": 18,
+      "code": 46,
+      "datagov": 5,
+      "investor": 1,
+      "variflight": 7
+    },
+    "invariant": 126,
+    "outside_stories": 17,
+    "removed_from_coverage": [
+      "Q121"
+    ],
+    "runnable_by_policy": 77,
+    "scored": 58,
+    "sensitive": 37,
+    "source": 163,
+    "stories": 59
+  },
+  "design_sensitivity_not_observed_results": {
+    "illustrations_single_binary_run": [
+      {
+        "difference_pp": 15.517241379310345,
+        "improved": 9,
+        "mcnemar_exact_two_sided_p": 0.00390625,
+        "regressed": 0
+      },
+      {
+        "difference_pp": 15.517241379310345,
+        "improved": 25,
+        "mcnemar_exact_two_sided_p": 0.21102359760880063,
+        "regressed": 16
+      }
+    ],
+    "n_scored_tasks": 58,
+    "n_story_clusters": 9,
+    "one_task_pp": 1.7241379310344827,
+    "planned_runs": 522
+  },
+  "distributions": {
+    "runnable": {
+      "answer_kind_heuristic": {
+        "Вычисляемый эталон": 17,
+        "Длинный текст": 29,
+        "Короткий список": 3,
+        "Короткий текст": 19,
+        "Проверка файла": 3,
+        "Число": 6
+      },
+      "complexity": {
+        "L1": 30,
+        "L2": 28,
+        "L3": 19
+      },
+      "evaluation": {
+        "eval_script": 3,
+        "llm_as_a_judge": 74
+      },
+      "n": 77,
+      "source_kind": {
+        "invariant": 60,
+        "sensitive": 17
+      },
+      "unique_annotated_tools_per_task": {
+        "1": 55,
+        "2": 15,
+        "3": 7
+      }
+    },
+    "scored": {
+      "answer_kind_heuristic": {
+        "Вычисляемый эталон": 14,
+        "Длинный текст": 24,
+        "Короткий список": 2,
+        "Короткий текст": 10,
+        "Проверка файла": 3,
+        "Число": 5
+      },
+      "complexity": {
+        "L1": 22,
+        "L2": 22,
+        "L3": 14
+      },
+      "evaluation": {
+        "eval_script": 3,
+        "llm_as_a_judge": 55
+      },
+      "n": 58,
+      "source_kind": {
+        "invariant": 44,
+        "sensitive": 14
+      },
+      "unique_annotated_tools_per_task": {
+        "1": 42,
+        "2": 11,
+        "3": 5
+      }
+    },
+    "stories": {
+      "answer_kind_heuristic": {
+        "Вычисляемый эталон": 14,
+        "Длинный текст": 25,
+        "Короткий список": 2,
+        "Короткий текст": 10,
+        "Проверка файла": 3,
+        "Число": 5
+      },
+      "complexity": {
+        "L1": 22,
+        "L2": 23,
+        "L3": 14
+      },
+      "evaluation": {
+        "eval_script": 3,
+        "llm_as_a_judge": 56
+      },
+      "n": 59,
+      "source_kind": {
+        "invariant": 45,
+        "sensitive": 14
+      },
+      "unique_annotated_tools_per_task": {
+        "1": 43,
+        "2": 11,
+        "3": 5
+      }
+    }
+  },
+  "environment": {
+    "config_server_sets_equal": true,
+    "configured": 63,
+    "connected": 32,
+    "connected_story_servers": 10,
+    "connected_story_tools": 136,
+    "connected_tools": 307,
+    "connected_without_tool_inventory": [
+      "exa"
+    ],
+    "disconnected_story_servers": [
+      "kospi-kosdaq"
+    ],
+    "named_story_tools": 43,
+    "non_story_server_tools": 171,
+    "required_by_source": 26,
+    "required_by_stories": 11,
+    "schema_bytes_connected": 369181,
+    "schema_bytes_story": 115729,
+    "snapshot_permissions_are_allow_all": true
+  },
+  "per_story": {
+    "app_store_research": {
+      "behavior": {
+        "mcp": 5,
+        "no_recorded_calls": 1
+      },
+      "completed": 6,
+      "complexity": {
+        "L1": 2,
+        "L2": 4
+      },
+      "n": 6,
+      "scored": 6,
+      "sensitive": 6,
+      "servers": [
+        "appinsightmcp"
+      ],
+      "task_ids": [
+        "Q251",
+        "Q252",
+        "Q253",
+        "Q275",
+        "Q276",
+        "Q277"
+      ]
+    },
+    "files_find_read": {
+      "behavior": {
+        "native_without_mcp": 9
+      },
+      "completed": 9,
+      "complexity": {
+        "L1": 4,
+        "L2": 2,
+        "L3": 3
+      },
+      "n": 9,
+      "scored": 9,
+      "sensitive": 0,
+      "servers": [
+        "filesystem"
+      ],
+      "task_ids": [
+        "Q87",
+        "Q89",
+        "Q91",
+        "Q92",
+        "Q131",
+        "Q132",
+        "Q173",
+        "Q174",
+        "Q175"
+      ]
+    },
+    "files_prepare": {
+      "behavior": {
+        "native_without_mcp": 5
+      },
+      "completed": 5,
+      "complexity": {
+        "L1": 1,
+        "L3": 4
+      },
+      "n": 5,
+      "scored": 5,
+      "sensitive": 0,
+      "servers": [
+        "filesystem"
+      ],
+      "task_ids": [
+        "Q88",
+        "Q170",
+        "Q171",
+        "Q172",
+        "Q176"
+      ]
+    },
+    "git_repo_state": {
+      "behavior": {
+        "mcp": 4
+      },
+      "completed": 4,
+      "complexity": {
+        "L1": 3,
+        "L3": 1
+      },
+      "n": 4,
+      "scored": 4,
+      "sensitive": 0,
+      "servers": [
+        "git"
+      ],
+      "task_ids": [
+        "Q93",
+        "Q94",
+        "Q95",
+        "Q133"
+      ]
+    },
+    "hf_dataset_inspect": {
+      "behavior": {
+        "mcp": 8,
+        "search_only": 1
+      },
+      "completed": 9,
+      "complexity": {
+        "L1": 6,
+        "L2": 2,
+        "L3": 1
+      },
+      "n": 9,
+      "scored": 9,
+      "sensitive": 0,
+      "servers": [
+        "dataset-viewer"
+      ],
+      "task_ids": [
+        "Q59",
+        "Q60",
+        "Q61",
+        "Q62",
+        "Q63",
+        "Q64",
+        "Q149",
+        "Q150",
+        "Q151"
+      ]
+    },
+    "horoscope": {
+      "behavior": {
+        "mcp": 2
+      },
+      "completed": 2,
+      "complexity": {
+        "L2": 3
+      },
+      "n": 3,
+      "scored": 3,
+      "sensitive": 0,
+      "servers": [
+        "Bazi"
+      ],
+      "task_ids": [
+        "Q190",
+        "Q214",
+        "Q224"
+      ]
+    },
+    "paper_fact_lookup": {
+      "behavior": {
+        "mcp": 4,
+        "native_without_mcp": 3
+      },
+      "completed": 7,
+      "complexity": {
+        "L1": 1,
+        "L2": 4,
+        "L3": 2
+      },
+      "n": 7,
+      "scored": 7,
+      "sensitive": 0,
+      "servers": [
+        "arxiv-mcp-server",
+        "paper_search_server"
+      ],
+      "task_ids": [
+        "Q81",
+        "Q154",
+        "Q155",
+        "Q163",
+        "Q167",
+        "Q192",
+        "Q193"
+      ]
+    },
+    "stock_quote_compare": {
+      "behavior": {
+        "mcp": 12
+      },
+      "completed": 12,
+      "complexity": {
+        "L1": 3,
+        "L2": 8,
+        "L3": 2
+      },
+      "n": 13,
+      "scored": 12,
+      "sensitive": 8,
+      "servers": [
+        "kospi-kosdaq",
+        "yahoo-finance"
+      ],
+      "task_ids": [
+        "Q194",
+        "Q200",
+        "Q205",
+        "Q206",
+        "Q226",
+        "Q291",
+        "Q292",
+        "Q293",
+        "Q294",
+        "Q295",
+        "Q296",
+        "Q297",
+        "Q304"
+      ]
+    },
+    "table_data_lookup": {
+      "behavior": {
+        "mcp": 2,
+        "native_without_mcp": 1
+      },
+      "completed": 3,
+      "complexity": {
+        "L1": 2,
+        "L3": 1
+      },
+      "n": 3,
+      "scored": 3,
+      "sensitive": 0,
+      "servers": [
+        "excel",
+        "filesystem",
+        "sqlite"
+      ],
+      "task_ids": [
+        "Q21",
+        "Q22",
+        "Q128"
+      ]
+    }
+  },
+  "quality": {
+    "duplicate_ids": [],
+    "financial_date_checks": [
+      {
+        "foreign_answer_months": [
+          4
+        ],
+        "question_id": "Q200",
+        "weekend_dates": [
+          "2025-08-09",
+          "2025-08-10"
+        ]
+      }
+    ],
+    "missing_required_runtime_artifacts": [
+      "tasks-ru.jsonl",
+      "reference evaluator source",
+      "eval_script source",
+      "test_data fixtures"
+    ],
+    "mixed_quote_questions": [
+      "Q128",
+      "Q131",
+      "Q132",
+      "Q170",
+      "Q171",
+      "Q172",
+      "Q87",
+      "Q89",
+      "Q91",
+      "Q92"
+    ],
+    "near_duplicate_questions": [
+      {
+        "a": "Q297",
+        "b": "Q304",
+        "jaccard": 0.938,
+        "story": "stock_quote_compare"
+      },
+      {
+        "a": "Q59",
+        "b": "Q60",
+        "jaccard": 0.882,
+        "story": "hf_dataset_inspect"
+      },
+      {
+        "a": "Q291",
+        "b": "Q292",
+        "jaccard": 0.852,
+        "story": "stock_quote_compare"
+      },
+      {
+        "a": "Q292",
+        "b": "Q293",
+        "jaccard": 0.852,
+        "story": "stock_quote_compare"
+      },
+      {
+        "a": "Q253",
+        "b": "Q277",
+        "jaccard": 0.789,
+        "story": "app_store_research"
+      },
+      {
+        "a": "Q291",
+        "b": "Q293",
+        "jaccard": 0.786,
+        "story": "stock_quote_compare"
+      },
+      {
+        "a": "Q294",
+        "b": "Q295",
+        "jaccard": 0.778,
+        "story": "stock_quote_compare"
+      },
+      {
+        "a": "Q252",
+        "b": "Q253",
+        "jaccard": 0.778,
+        "story": "app_store_research"
+      },
+      {
+        "a": "Q276",
+        "b": "Q277",
+        "jaccard": 0.778,
+        "story": "app_store_research"
+      },
+      {
+        "a": "Q252",
+        "b": "Q276",
+        "jaccard": 0.765,
+        "story": "app_store_research"
+      },
+      {
+        "a": "Q251",
+        "b": "Q275",
+        "jaccard": 0.75,
+        "story": "app_store_research"
+      },
+      {
+        "a": "Q87",
+        "b": "Q92",
+        "jaccard": 0.692,
+        "story": "files_find_read"
+      },
+      {
+        "a": "Q61",
+        "b": "Q151",
+        "jaccard": 0.652,
+        "story": "hf_dataset_inspect"
+      },
+      {
+        "a": "Q60",
+        "b": "Q62",
+        "jaccard": 0.636,
+        "story": "hf_dataset_inspect"
+      },
+      {
+        "a": "Q252",
+        "b": "Q277",
+        "jaccard": 0.6,
+        "story": "app_store_research"
+      },
+      {
+        "a": "Q253",
+        "b": "Q276",
+        "jaccard": 0.6,
+        "story": "app_store_research"
+      },
+      {
+        "a": "Q59",
+        "b": "Q62",
+        "jaccard": 0.565,
+        "story": "hf_dataset_inspect"
+      },
+      {
+        "a": "Q87",
+        "b": "Q132",
+        "jaccard": 0.562,
+        "story": "files_find_read"
+      }
+    ],
+    "sources": {
+      "invariant": {
+        "exact_duplicate_rows": 0,
+        "missing_by_field": {
+          "MCP": 0,
+          "answer": 0,
+          "complexity": 0,
+          "eval_method": 0,
+          "question": 0,
+          "question_id": 0,
+          "time-sensitive": 0,
+          "tool": 0
+        },
+        "rows": 126
+      },
+      "sensitive": {
+        "exact_duplicate_rows": 0,
+        "missing_by_field": {
+          "MCP": 0,
+          "answer": 37,
+          "complexity": 0,
+          "eval_method": 0,
+          "get_answer_id": 0,
+          "question": 0,
+          "question_id": 0,
+          "time-sensitive": 0,
+          "tool": 0
+        },
+        "rows": 37
+      }
+    },
+    "stray_paren_questions": [
+      "Q60"
+    ],
+    "unknown_complexities": [],
+    "weekday_references_in_snapshot": [
+      {
+        "expected_date": "2026-11-08",
+        "question_id": "Q306",
+        "reference_matches": true
+      },
+      {
+        "expected_date": "2026-11-02",
+        "question_id": "Q307",
+        "reference_matches": true
+      }
+    ]
+  }
+}

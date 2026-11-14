@@ -27,5 +27,6 @@ repos:
     hooks:
       - id: pyrefly-check
         name: pyrefly (type checking)
+        files: ^scripts/
         pass_filenames: false
         additional_dependencies: [pyyaml, types-pyyaml]

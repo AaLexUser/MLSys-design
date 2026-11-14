@@ -1,0 +1,1969 @@
+[
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q1",
+    "servers": [
+      "amap-maps"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q3",
+    "servers": [
+      "amap-maps"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q4",
+    "servers": [
+      "amap-maps"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q6",
+    "servers": [
+      "amap-maps"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q7",
+    "servers": [
+      "fetch"
+    ],
+    "source_kind": "invariant",
+    "status": "outside_stories",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q8",
+    "servers": [
+      "12306-mcp"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q10",
+    "servers": [
+      "12306-mcp"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q14",
+    "servers": [
+      "variflight"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q15",
+    "servers": [
+      "variflight"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q19",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q20",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q21",
+    "servers": [
+      "sqlite"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "table_data_lookup"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q61",
+    "servers": [
+      "dataset-viewer"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "hf_dataset_inspect"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q22",
+    "servers": [
+      "sqlite"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "table_data_lookup"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q58",
+    "servers": [
+      "calculator"
+    ],
+    "source_kind": "invariant",
+    "status": "outside_stories",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q59",
+    "servers": [
+      "dataset-viewer"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "hf_dataset_inspect"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q63",
+    "servers": [
+      "dataset-viewer"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "hf_dataset_inspect"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q64",
+    "servers": [
+      "dataset-viewer"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "hf_dataset_inspect"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q81",
+    "servers": [
+      "paper_search_server"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "paper_fact_lookup"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q60",
+    "servers": [
+      "dataset-viewer"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "hf_dataset_inspect"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q84",
+    "servers": [
+      "world_bank"
+    ],
+    "source_kind": "invariant",
+    "status": "outside_stories",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q62",
+    "servers": [
+      "dataset-viewer"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "hf_dataset_inspect"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q87",
+    "servers": [
+      "filesystem"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "files_find_read"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q88",
+    "servers": [
+      "filesystem"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "files_prepare"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q89",
+    "servers": [
+      "filesystem"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "files_find_read"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q91",
+    "servers": [
+      "filesystem"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "files_find_read"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q92",
+    "servers": [
+      "filesystem"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "files_find_read"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q93",
+    "servers": [
+      "git"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "git_repo_state"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q94",
+    "servers": [
+      "git"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "git_repo_state"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q95",
+    "servers": [
+      "git"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "git_repo_state"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q108",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": "reference hour pillar is wrong for the stated birth time",
+    "policy_reasons": [],
+    "question_id": "Q121",
+    "servers": [
+      "Bazi"
+    ],
+    "source_kind": "invariant",
+    "status": "coverage_removed",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q123",
+    "servers": [
+      "wuwa-mcp"
+    ],
+    "source_kind": "invariant",
+    "status": "outside_stories",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q125",
+    "servers": [
+      "wikipedia"
+    ],
+    "source_kind": "invariant",
+    "status": "outside_stories",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q126",
+    "servers": [
+      "wikipedia"
+    ],
+    "source_kind": "invariant",
+    "status": "outside_stories",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q127",
+    "servers": [
+      "wikipedia"
+    ],
+    "source_kind": "invariant",
+    "status": "outside_stories",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q128",
+    "servers": [
+      "excel",
+      "filesystem"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "table_data_lookup"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q131",
+    "servers": [
+      "filesystem"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "files_find_read"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q132",
+    "servers": [
+      "filesystem"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "files_find_read"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q133",
+    "servers": [
+      "git"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "git_repo_state"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q138",
+    "servers": [
+      "12306-mcp"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q140",
+    "servers": [
+      "amap-maps"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q141",
+    "servers": [
+      "amap-maps"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q142",
+    "servers": [
+      "amap-maps"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q143",
+    "servers": [
+      "amap-maps"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q144",
+    "servers": [
+      "amap-maps"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q145",
+    "servers": [
+      "amap-maps"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q149",
+    "servers": [
+      "dataset-viewer"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "hf_dataset_inspect"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q150",
+    "servers": [
+      "dataset-viewer"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "hf_dataset_inspect"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q151",
+    "servers": [
+      "dataset-viewer"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "hf_dataset_inspect"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q152",
+    "servers": [
+      "nasa-mcp"
+    ],
+    "source_kind": "invariant",
+    "status": "outside_stories",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q154",
+    "servers": [
+      "paper_search_server"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "paper_fact_lookup"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q160",
+    "servers": [
+      "fetch"
+    ],
+    "source_kind": "invariant",
+    "status": "outside_stories",
+    "story": null
+  },
+  {
+    "defect": "reference astronomy image does not match the stated date",
+    "policy_reasons": [],
+    "question_id": "Q162",
+    "servers": [
+      "Bazi",
+      "nasa-mcp"
+    ],
+    "source_kind": "invariant",
+    "status": "outside_stories",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q163",
+    "servers": [
+      "paper_search_server"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "paper_fact_lookup"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q166",
+    "servers": [
+      "amap-maps"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q167",
+    "servers": [
+      "paper_search_server"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "paper_fact_lookup"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q168",
+    "servers": [
+      "amap-maps"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q170",
+    "servers": [
+      "filesystem"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "files_prepare"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q155",
+    "servers": [
+      "paper_search_server"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "paper_fact_lookup"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q171",
+    "servers": [
+      "filesystem"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "files_prepare"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q172",
+    "servers": [
+      "filesystem"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "files_prepare"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q173",
+    "servers": [
+      "filesystem"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "files_find_read"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q174",
+    "servers": [
+      "filesystem"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "files_find_read"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q175",
+    "servers": [
+      "filesystem"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "files_find_read"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q176",
+    "servers": [
+      "filesystem"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "files_prepare"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q177",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q178",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q179",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q180",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q181",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q182",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q183",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q184",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q185",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q186",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q187",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q188",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q189",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q190",
+    "servers": [
+      "Bazi"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "horoscope"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "package_not_executable"
+    ],
+    "question_id": "Q191",
+    "servers": [
+      "investor"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q192",
+    "servers": [
+      "arxiv-mcp-server"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "paper_fact_lookup"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q193",
+    "servers": [
+      "arxiv-mcp-server"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "paper_fact_lookup"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q194",
+    "servers": [
+      "kospi-kosdaq"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "stock_quote_compare"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q195",
+    "servers": [
+      "whois"
+    ],
+    "source_kind": "invariant",
+    "status": "outside_stories",
+    "story": null
+  },
+  {
+    "defect": "question asks for August 2025 trading days, reference is for April 2025",
+    "policy_reasons": [],
+    "question_id": "Q200",
+    "servers": [
+      "yahoo-finance"
+    ],
+    "source_kind": "invariant",
+    "status": "covered_not_scored",
+    "story": "stock_quote_compare"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q201",
+    "servers": [
+      "3rd_party_mcp_server_shuidi"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q202",
+    "servers": [
+      "3rd_party_mcp_server_shuidi"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q203",
+    "servers": [
+      "wuwa-mcp"
+    ],
+    "source_kind": "invariant",
+    "status": "outside_stories",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q205",
+    "servers": [
+      "yahoo-finance"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "stock_quote_compare"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q206",
+    "servers": [
+      "yahoo-finance"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "stock_quote_compare"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q214",
+    "servers": [
+      "Bazi"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "horoscope"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q223",
+    "servers": [
+      "bilibili"
+    ],
+    "source_kind": "invariant",
+    "status": "outside_stories",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q224",
+    "servers": [
+      "Bazi"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "horoscope"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q225",
+    "servers": [
+      "fetch"
+    ],
+    "source_kind": "invariant",
+    "status": "outside_stories",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q226",
+    "servers": [
+      "yahoo-finance"
+    ],
+    "source_kind": "invariant",
+    "status": "scored",
+    "story": "stock_quote_compare"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q316",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q323",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q325",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q326",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q327",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q328",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q329",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q330",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q331",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q333",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q349",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q353",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q357",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q358",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q362",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q364",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q365",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q366",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q367",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q368",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q369",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q378",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q379",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q380",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q381",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q382",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q383",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q385",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q386",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "python_execution_outside_mcp"
+    ],
+    "question_id": "Q387",
+    "servers": [
+      "code"
+    ],
+    "source_kind": "invariant",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q242",
+    "servers": [
+      "12306-mcp"
+    ],
+    "source_kind": "sensitive",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q243",
+    "servers": [
+      "12306-mcp"
+    ],
+    "source_kind": "sensitive",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q244",
+    "servers": [
+      "amap-maps"
+    ],
+    "source_kind": "sensitive",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q245",
+    "servers": [
+      "amap-maps"
+    ],
+    "source_kind": "sensitive",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q246",
+    "servers": [
+      "variflight"
+    ],
+    "source_kind": "sensitive",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q247",
+    "servers": [
+      "variflight"
+    ],
+    "source_kind": "sensitive",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q251",
+    "servers": [
+      "appinsightmcp"
+    ],
+    "source_kind": "sensitive",
+    "status": "scored",
+    "story": "app_store_research"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q252",
+    "servers": [
+      "appinsightmcp"
+    ],
+    "source_kind": "sensitive",
+    "status": "scored",
+    "story": "app_store_research"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q253",
+    "servers": [
+      "appinsightmcp"
+    ],
+    "source_kind": "sensitive",
+    "status": "scored",
+    "story": "app_store_research"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "upstream_unavailable"
+    ],
+    "question_id": "Q265",
+    "servers": [
+      "datagov"
+    ],
+    "source_kind": "sensitive",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q266",
+    "servers": [
+      "12306-mcp"
+    ],
+    "source_kind": "sensitive",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q267",
+    "servers": [
+      "12306-mcp"
+    ],
+    "source_kind": "sensitive",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q268",
+    "servers": [
+      "amap-maps"
+    ],
+    "source_kind": "sensitive",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q269",
+    "servers": [
+      "amap-maps"
+    ],
+    "source_kind": "sensitive",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q270",
+    "servers": [
+      "variflight"
+    ],
+    "source_kind": "sensitive",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q271",
+    "servers": [
+      "variflight"
+    ],
+    "source_kind": "sensitive",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "upstream_unavailable"
+    ],
+    "question_id": "Q272",
+    "servers": [
+      "datagov"
+    ],
+    "source_kind": "sensitive",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q275",
+    "servers": [
+      "appinsightmcp"
+    ],
+    "source_kind": "sensitive",
+    "status": "scored",
+    "story": "app_store_research"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q276",
+    "servers": [
+      "appinsightmcp"
+    ],
+    "source_kind": "sensitive",
+    "status": "scored",
+    "story": "app_store_research"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q277",
+    "servers": [
+      "appinsightmcp"
+    ],
+    "source_kind": "sensitive",
+    "status": "scored",
+    "story": "app_store_research"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "upstream_unavailable"
+    ],
+    "question_id": "Q282",
+    "servers": [
+      "datagov"
+    ],
+    "source_kind": "sensitive",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "upstream_unavailable"
+    ],
+    "question_id": "Q287",
+    "servers": [
+      "datagov"
+    ],
+    "source_kind": "sensitive",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q291",
+    "servers": [
+      "yahoo-finance"
+    ],
+    "source_kind": "sensitive",
+    "status": "scored",
+    "story": "stock_quote_compare"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q292",
+    "servers": [
+      "yahoo-finance"
+    ],
+    "source_kind": "sensitive",
+    "status": "scored",
+    "story": "stock_quote_compare"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q293",
+    "servers": [
+      "yahoo-finance"
+    ],
+    "source_kind": "sensitive",
+    "status": "scored",
+    "story": "stock_quote_compare"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q294",
+    "servers": [
+      "yahoo-finance"
+    ],
+    "source_kind": "sensitive",
+    "status": "scored",
+    "story": "stock_quote_compare"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q295",
+    "servers": [
+      "yahoo-finance"
+    ],
+    "source_kind": "sensitive",
+    "status": "scored",
+    "story": "stock_quote_compare"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q296",
+    "servers": [
+      "yahoo-finance"
+    ],
+    "source_kind": "sensitive",
+    "status": "scored",
+    "story": "stock_quote_compare"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q297",
+    "servers": [
+      "yahoo-finance"
+    ],
+    "source_kind": "sensitive",
+    "status": "scored",
+    "story": "stock_quote_compare"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q298",
+    "servers": [
+      "amap-maps"
+    ],
+    "source_kind": "sensitive",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q299",
+    "servers": [
+      "amap-maps"
+    ],
+    "source_kind": "sensitive",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "unavailable_service_or_credentials"
+    ],
+    "question_id": "Q303",
+    "servers": [
+      "variflight"
+    ],
+    "source_kind": "sensitive",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q304",
+    "servers": [
+      "yahoo-finance"
+    ],
+    "source_kind": "sensitive",
+    "status": "scored",
+    "story": "stock_quote_compare"
+  },
+  {
+    "defect": null,
+    "policy_reasons": [
+      "upstream_unavailable"
+    ],
+    "question_id": "Q305",
+    "servers": [
+      "datagov"
+    ],
+    "source_kind": "sensitive",
+    "status": "excluded",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q306",
+    "servers": [
+      "time"
+    ],
+    "source_kind": "sensitive",
+    "status": "outside_stories",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q307",
+    "servers": [
+      "time"
+    ],
+    "source_kind": "sensitive",
+    "status": "outside_stories",
+    "story": null
+  },
+  {
+    "defect": null,
+    "policy_reasons": [],
+    "question_id": "Q308",
+    "servers": [
+      "time"
+    ],
+    "source_kind": "sensitive",
+    "status": "outside_stories",
+    "story": null
+  }
+]

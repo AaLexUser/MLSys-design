@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1050" height="485" viewBox="0 0 1050 485" role="img" aria-labelledby="title">
+<title id="title">Заявленная сложность задач в девяти историях</title>
+<rect width="100%" height="100%" fill="white"/>
+<g font-family="Arial, sans-serif" font-size="14" fill="#243447">
+<text x="20" y="26" font-size="19" font-weight="bold">Заявленная сложность задач в девяти историях</text>
+<rect x="20" y="43" width="12" height="12" fill="#3477aa"/>
+<text x="38" y="54" >Простые</text>
+<rect x="170" y="43" width="12" height="12" fill="#d49632"/>
+<text x="188" y="54" >Средние</text>
+<rect x="320" y="43" width="12" height="12" fill="#8b579f"/>
+<text x="338" y="54" >Сложные</text>
+<text x="316" y="96" text-anchor="end">Поиск и сборка датасетов</text>
+<rect x="330.000" y="79" width="286.154" height="24" fill="#3477aa"/>
+<text x="473.077" y="96" text-anchor="middle" fill="white">6</text>
+<rect x="616.154" y="79" width="95.385" height="24" fill="#d49632"/>
+<text x="663.846" y="96" text-anchor="middle" fill="white">2</text>
+<rect x="711.538" y="79" width="47.692" height="24" fill="#8b579f"/>
+<text x="735.385" y="96" text-anchor="middle" fill="white">1</text>
+<text x="767.231" y="96" >9</text>
+<text x="316" y="135" text-anchor="end">Работа со статьями</text>
+<rect x="330.000" y="118" width="47.692" height="24" fill="#3477aa"/>
+<text x="353.846" y="135" text-anchor="middle" fill="white">1</text>
+<rect x="377.692" y="118" width="190.769" height="24" fill="#d49632"/>
+<text x="473.077" y="135" text-anchor="middle" fill="white">4</text>
+<rect x="568.462" y="118" width="95.385" height="24" fill="#8b579f"/>
+<text x="616.154" y="135" text-anchor="middle" fill="white">2</text>
+<text x="671.846" y="135" >7</text>
+<text x="316" y="174" text-anchor="end">Поиск и чтение файлов</text>
+<rect x="330.000" y="157" width="190.769" height="24" fill="#3477aa"/>
+<text x="425.385" y="174" text-anchor="middle" fill="white">4</text>
+<rect x="520.769" y="157" width="95.385" height="24" fill="#d49632"/>
+<text x="568.462" y="174" text-anchor="middle" fill="white">2</text>
+<rect x="616.154" y="157" width="143.077" height="24" fill="#8b579f"/>
+<text x="687.692" y="174" text-anchor="middle" fill="white">3</text>
+<text x="767.231" y="174" >9</text>
+<text x="316" y="213" text-anchor="end">Подготовка файлов</text>
+<rect x="330.000" y="196" width="47.692" height="24" fill="#3477aa"/>
+<text x="353.846" y="213" text-anchor="middle" fill="white">1</text>
+<rect x="377.692" y="196" width="190.769" height="24" fill="#8b579f"/>
+<text x="473.077" y="213" text-anchor="middle" fill="white">4</text>
+<text x="576.462" y="213" >5</text>
+<text x="316" y="252" text-anchor="end">Работа с кодом репозитория</text>
+<rect x="330.000" y="235" width="143.077" height="24" fill="#3477aa"/>
+<text x="401.538" y="252" text-anchor="middle" fill="white">3</text>
+<rect x="473.077" y="235" width="47.692" height="24" fill="#8b579f"/>
+<text x="496.923" y="252" text-anchor="middle" fill="white">1</text>
+<text x="528.769" y="252" >4</text>
+<text x="316" y="291" text-anchor="end">Табличные отчёты</text>
+<rect x="330.000" y="274" width="95.385" height="24" fill="#3477aa"/>
+<text x="377.692" y="291" text-anchor="middle" fill="white">2</text>
+<rect x="425.385" y="274" width="47.692" height="24" fill="#8b579f"/>
+<text x="449.231" y="291" text-anchor="middle" fill="white">1</text>
+<text x="481.077" y="291" >3</text>
+<text x="316" y="330" text-anchor="end">Запросы и сравнение котировок</text>
+<rect x="330.000" y="313" width="143.077" height="24" fill="#3477aa"/>
+<text x="401.538" y="330" text-anchor="middle" fill="white">3</text>
+<rect x="473.077" y="313" width="381.538" height="24" fill="#d49632"/>
+<text x="663.846" y="330" text-anchor="middle" fill="white">8</text>
+<rect x="854.615" y="313" width="95.385" height="24" fill="#8b579f"/>
+<text x="902.308" y="330" text-anchor="middle" fill="white">2</text>
+<text x="958.0" y="330" >13</text>
+<text x="316" y="369" text-anchor="end">Исследование приложений</text>
+<rect x="330.000" y="352" width="95.385" height="24" fill="#3477aa"/>
+<text x="377.692" y="369" text-anchor="middle" fill="white">2</text>
+<rect x="425.385" y="352" width="190.769" height="24" fill="#d49632"/>
+<text x="520.769" y="369" text-anchor="middle" fill="white">4</text>
+<text x="624.154" y="369" >6</text>
+<text x="316" y="408" text-anchor="end">Вопросы гороскопов</text>
+<rect x="330.000" y="391" width="143.077" height="24" fill="#d49632"/>
+<text x="401.538" y="408" text-anchor="middle" fill="white">3</text>
+<text x="481.077" y="408" >3</text>
+<text x="20" y="444" font-size="12" fill="#57606a">Число задач</text>
+</g>
+</svg>
