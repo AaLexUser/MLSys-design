@@ -1,0 +1,35 @@
+{
+  "mcpverse": {
+    "source": "https://github.com/hailsham/mcpverse",
+    "commit": "995cc9eab953120c760b90d4e8e41ffa7fdc88f1",
+    "license": "Apache-2.0",
+    "paper": "arXiv:2508.16260",
+    "files": {
+      "mcpverse/data/mcpverse_time_invariant_v1.1.csv": "68338eb5e4830496f090409cbd9ff794fa890fa3e1363dd6f139f8d22128d9a9",
+      "mcpverse/data/mcpverse_time_sensitive_v1.1.csv": "ec3629d5c2f506593e6ae03a3e1997e41ac4b8cd5d563855447efa4633bbc43b",
+      "mcpverse/tool_full.json": "ed541d816ec2b550ef1af878c19b07610fc380c63f01825f1744181d09f4dbdc"
+    },
+    "dirs": {
+      "mcpverse/test_data": "9f19317f897b29e7b16f320b5f7e61cfd651be7c548da5dede1ed60e3247e9dc",
+      "mcpverse/templates": "900c6af4bc515d11ce4e4a58e278606925e9c583215e0bfa3a0e6ec779985aa0"
+    }
+  },
+  "runner": {
+    "source": "SkillFactory repository, branch benchmark/mcpverse, directory benchmarks/mcpverse",
+    "commit": "17697d702445cb08f5f6388ebd4381e9fc1098df",
+    "files": {
+      "runner.py": "c1279d267eb216a4e6517d2baa1b29aafa97bab854e5ad915ff3be7539a46e13",
+      "tasks-ru.jsonl": "9e9a79b40f4582f72a2ffc09ef24dd7e6d12d916b0d62276f5cfa58f998ac634",
+      "tasks-refusal.jsonl": "59737f3d4a57b04fc13c1ae108db357b93e386a36c132d01e8092fdbb5e15bce",
+      "skills-baseline-v1/app_store_research-v1/SKILL.md": "6c6a3280152bb89cecadde64df21ac07faf48bc150019fa61bc310a7820fc1e8",
+      "skills-baseline-v1/bazi_reading-v1/SKILL.md": "39312f37fc68745ba8d258b2c0a2cf7a49bc8ca60f0988c7758584b576fecff6",
+      "skills-baseline-v1/files_find_read-v1/SKILL.md": "65a59ec92512fe4151ad29943511f1a291e10b36ea747e8c155caf2d7db9a6dd",
+      "skills-baseline-v1/files_prepare-v1/SKILL.md": "af1f01dfbac19a243ac00858111e5ae0b726e901713eb70290eaaf0f8aa71414",
+      "skills-baseline-v1/git_repo_state-v1/SKILL.md": "679691f70386fe6af6f66dbbd21457d04116069f7f2a0623ecb4395ae7886107",
+      "skills-baseline-v1/hf_dataset_inspect-v1/SKILL.md": "8ad2933a3bddb31006520dc7e399dca2534d03b5c29f673f1b1f8c21ef602a6f",
+      "skills-baseline-v1/paper_fact_lookup-v1/SKILL.md": "51595bbb1dba30bec0b8a68670a1875bfee40884b1b1bb5a678a213cf0535261",
+      "skills-baseline-v1/stock_quote_compare-v1/SKILL.md": "38042394ec674d1571a2bbcb4f2de830c361fcf0e897f1c92e4ece3542e12bbb",
+      "skills-baseline-v1/table_data_lookup-v1/SKILL.md": "ea996c391265b15f5b6ffa3b71fec7833ae923469898bfa3218f959c306be079"
+    }
+  }
+}

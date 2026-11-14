@@ -1,678 +1,861 @@
-#!/usr/bin/env python3
-"""Offline MCPVerse snapshot analysis. Python 3.10+, standard library only."""
+"""EDA of the MCPVerse tasks selected for the SkillFactory benchmark.
+
+Reads the MCPVerse task files, fixtures and reference templates, the selection constants
+of the SkillFactory runner and its refusal tasks, checks them against docs/eda/inputs.json,
+and writes stats.json,
+selection.jsonl and figures/*.png next to this file. Neither the runner nor MCPVerse code is
+executed: the runner and the templates are parsed with ast, fixtures are only read.
+
+    uv run --group eda python docs/eda/analyze.py \
+        --mcpverse PATH_TO_MCPVERSE_CHECKOUT --runner PATH_TO_benchmarks/mcpverse
+"""
 
 import argparse
+import ast
 import csv
+import datetime as dt
 import hashlib
-import html
+import itertools
 import json
-import math
 import re
-import statistics
-from collections import Counter
-from datetime import date, timedelta
+import sqlite3
+import subprocess
+import sys
+from collections import Counter, defaultdict
 from pathlib import Path
+from zoneinfo import ZoneInfo
+
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import numpy as np
+import openpyxl
 
 HERE = Path(__file__).resolve().parent
-DEFAULT_DATA = HERE / "data"
-# Study design supplied by the project, not inferred from successful runs.
-STORIES = {
-    "hf_dataset_inspect": ["Q59", "Q60", "Q61", "Q62", "Q63", "Q64", "Q149", "Q150", "Q151"],
-    "paper_fact_lookup": ["Q81", "Q154", "Q155", "Q163", "Q167", "Q192", "Q193"],
-    "files_find_read": ["Q87", "Q89", "Q91", "Q92", "Q131", "Q132", "Q173", "Q174", "Q175"],
-    "files_prepare": ["Q88", "Q170", "Q171", "Q172", "Q176"],
-    "git_repo_state": ["Q93", "Q94", "Q95", "Q133"],
-    "table_data_lookup": ["Q21", "Q22", "Q128"],
-    "stock_quote_compare": [
-        "Q194",
-        "Q200",
-        "Q205",
-        "Q206",
-        "Q226",
-        "Q291",
-        "Q292",
-        "Q293",
-        "Q294",
-        "Q295",
-        "Q296",
-        "Q297",
-        "Q304",
-    ],
-    "app_store_research": ["Q251", "Q252", "Q253", "Q275", "Q276", "Q277"],
-    "horoscope": ["Q190", "Q214", "Q224"],
-}
-EXCLUSIONS = {
-    "code": "python_execution_outside_mcp",
-    "amap-maps": "unavailable_service_or_credentials",
-    "12306-mcp": "unavailable_service_or_credentials",
-    "variflight": "unavailable_service_or_credentials",
-    "3rd_party_mcp_server_shuidi": "unavailable_service_or_credentials",
-    "investor": "package_not_executable",
-    "datagov": "upstream_unavailable",
-}
-# Three known reference defects. Q121 removed the task from coverage entirely.
-# Q200 stays covered by its story but is excluded from scoring.
-# Q162 was never covered and sits in the outside-stories remainder.
-DEFECTS = {
-    "Q200": "question asks for August 2025 trading days, reference is for April 2025",
-    "Q121": "reference hour pillar is wrong for the stated birth time",
-    "Q162": "reference astronomy image does not match the stated date",
-}
-STORY_LABELS = {
-    "hf_dataset_inspect": "Поиск и сборка датасетов",
-    "paper_fact_lookup": "Работа со статьями",
+FIG = HERE / "figures"
+
+# Reference palette (dataviz skill, light mode).
+BLUE, ORANGE, AQUA, GREY = "#2a78d6", "#eb6834", "#1baf7a", "#b9b8b2"
+INK, INK2 = "#0b0b0b", "#52514e"
+
+STORY_RU = {
+    "hf_dataset_inspect": "Датасеты Hugging Face",
+    "paper_fact_lookup": "Факты из статей",
     "files_find_read": "Поиск и чтение файлов",
     "files_prepare": "Подготовка файлов",
-    "git_repo_state": "Работа с кодом репозитория",
-    "table_data_lookup": "Табличные отчёты",
-    "stock_quote_compare": "Запросы и сравнение котировок",
-    "app_store_research": "Исследование приложений",
-    "horoscope": "Вопросы гороскопов",
+    "git_repo_state": "Состояние git-репозитория",
+    "table_data_lookup": "Таблицы и база данных",
+    "stock_quote_compare": "Котировки акций",
+    "app_store_research": "Приложения App Store",
+    "bazi_reading": "Китайский гороскоп (бацзы)",
 }
-
-NOT_SCORED = {"Q200"}
-REMOVED_FROM_COVERAGE = {"Q121"}
-MONTHS = {
-    "january": 1,
-    "february": 2,
-    "march": 3,
-    "april": 4,
-    "may": 5,
-    "june": 6,
-    "july": 7,
-    "august": 8,
-    "september": 9,
-    "october": 10,
-    "november": 11,
-    "december": 12,
-}
-DATE_RE = re.compile(
-    r"\b(January|February|March|April|May|June|July|August|September|"
-    r"October|November|December)\s+(\d{1,2}),?\s+(\d{4})\b",
-    re.IGNORECASE,
+# Where the data behind a server lives. Decides whether a reference can drift.
+LOCAL_SERVERS = {"filesystem", "git", "sqlite", "excel"}  # fixtures in the MCPVerse repo
+CALC_SERVERS = {"Bazi"}  # deterministic calendar computation, no external data
+MARKET_SERVERS = {"yahoo-finance", "kospi-kosdaq", "investor"}
+REFUSAL_RE = re.compile(
+    r"\b(cannot|can't|unable|not available|no access|permission denied|refuse)\b", re.I
 )
-WORD_RE = re.compile(r"[a-z0-9]+")
-COLORS = ["#3477aa", "#d49632", "#8b579f", "#319172"]
+CJK_RE = re.compile(r"[　-〿一-鿿＀-￯]")
+DATE_RE = re.compile(
+    r"\b(January|February|March|April|May|June|July|August|September|October|"
+    r"November|December) (\d{1,2}), (\d{4})"
+)
+STEMS, BRANCHES = "甲乙丙丁戊己庚辛壬癸", "子丑寅卯辰巳午未申酉戌亥"
+SHORT_REF = 30  # characters; a reference this short can be checked without a judge
+REFUSAL_RU = {
+    "no_data": "Отказ: нет данных",
+    "no_access": "Отказ: нет доступа",
+    "out_of_domain": "Отказ: вне домена",
+}
 
 
-def read_json(path):
-    return json.loads(path.read_text(encoding="utf-8"))
+def sha256(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def read_jsonl(path):
-    text = path.read_text(encoding="utf-8")
-    return [json.loads(line) for line in text.splitlines() if line.strip()]
+def dir_digest(path):
+    """SHA-256 over sorted relative paths and contents: any added, removed or edited file counts."""
+    h = hashlib.sha256()
+    for f in sorted(p for p in path.rglob("*") if p.is_file()):
+        h.update(f.relative_to(path).as_posix().encode() + b"\0" + f.read_bytes() + b"\0")
+    return h.hexdigest()
 
 
-def servers(row):
-    return {part.strip() for part in row["MCP"].split("+") if part.strip()}
+def verify_inputs(roots, manifest):
+    """Stop if any input differs from the manifest: numbers below depend on exact files."""
+    for key, root in roots.items():
+        spec = manifest[key]
+        for rel, digest in spec["files"].items():
+            got = sha256(root / rel)
+            if got != digest:
+                sys.exit(f"{key}/{rel}: sha256 {got} != manifest {digest}")
+        for rel, digest in spec.get("dirs", {}).items():
+            got = dir_digest(root / rel)
+            if got != digest:
+                sys.exit(f"{key}/{rel}/: sha256 {got} != manifest {digest}")
+        head = subprocess.run(
+            ["git", "-C", str(root), "rev-parse", "HEAD"], capture_output=True, text=True
+        ).stdout.strip()
+        if head and head != spec["commit"]:
+            print(f"warning: {key} HEAD {head[:7]} != manifest {spec['commit'][:7]}")
 
 
-def tools(row):
-    # Unique names in the annotation, not runtime calls or steps.
-    parts = [re.sub(r"\s*\*\s*\d+\s*$", "", p.strip()) for p in row["tool"].split("+")]
-    return {re.sub(r"^[\w-]+[./](?=\w)", "", p) for p in parts if p}
+def runner_constants(path):
+    """Literal constants of runner.py plus story names taken from the STORY_QIDS comments."""
+    src = path.read_text(encoding="utf-8")
+    tree = ast.parse(src)
+    names = {"REQUIRED_KEYS", "CN_ONLY_SERVERS", "BROKEN_SERVERS", "DEFECT_QIDS", "STORY_QIDS"}
+    consts, story_span = {}, None
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and isinstance(node.targets[0], ast.Name):
+            name = node.targets[0].id
+            if name in names:
+                value = node.value
+                if isinstance(value, ast.Call) and isinstance(value.func, ast.Attribute):
+                    value = value.func.value  # "Q1,Q2".split(",") -> keep the string
+                consts[name] = ast.literal_eval(value)
+                if name == "STORY_QIDS":
+                    story_span = (node.lineno, node.end_lineno)
+    if story_span is None:
+        sys.exit("STORY_QIDS not found in runner.py")
+    stories, pending = {}, []
+    for line in src.splitlines()[story_span[0] - 1 : story_span[1]]:
+        code, _, comment = line.partition("#")
+        pending += re.findall(r"Q\d+", code)
+        if comment.strip():
+            for qid in pending:
+                stories[qid] = comment.strip()
+            pending = []
+    order = consts["STORY_QIDS"].split(",")
+    if sorted(order) != sorted(stories):
+        sys.exit("story comments do not cover STORY_QIDS")
+    consts["STORY_OF"] = stories
+    return consts
 
 
-def answer_kind(row):
-    answer = row["answer"].strip()
-    if row["eval_method"] == "eval_script":
-        return "Проверка файла"
-    if row["source_kind"] == "sensitive":
-        return "Вычисляемый эталон"
-    if re.fullmatch(r"-?[\d.,]+", answer):
-        return "Число"
-    if len(answer) < 60 and "," in answer:
-        return "Короткий список"
-    if len(answer) < 80:
-        return "Короткий текст"
-    return "Длинный текст"
+def task_servers(row):
+    return {m.strip() for m in re.split(r"[+;]", row["MCP"] or "") if m.strip()}
 
 
-def word_bag(text):
-    return set(WORD_RE.findall(text.lower()))
-
-
-def numeric_summary(values):
-    values = sorted(values)
-    if not values:
-        return {"n": 0}
-
-    def percentile(p):
-        # Linear interpolation, equivalent to quantile type 7.
-        i = (len(values) - 1) * p
-        a = int(i)
-        b = min(a + 1, len(values) - 1)
-        return round(values[a] + (values[b] - values[a]) * (i - a), 4)
-
-    return {
-        "n": len(values),
-        "min": values[0],
-        "median": statistics.median(values),
-        "p90": percentile(0.9),
-        "max": values[-1],
-    }
-
-
-def exact_mcnemar(improved, regressed):
-    n = improved + regressed
-    return min(1.0, 2 * sum(math.comb(n, k) for k in range(min(improved, regressed) + 1)) / 2**n)
-
-
-def check_financial_dates(tasks, qids):
-    """Dates inside financial questions: weekend dates and answer months that differ."""
-    found = []
-    for q in sorted(qids, key=lambda x: int(x[1:])):
-        row = tasks[q]
-        dates = [
-            date(int(y), MONTHS[m.lower()], int(d)) for m, d, y in DATE_RE.findall(row["question"])
-        ]
-        if not dates:
+def parse_tools(raw):
+    """'yahoo-finance/get_x * 2 + get_y' -> {'get_x': 2, 'get_y': 1}."""
+    calls = {}
+    for part in raw.split("+"):
+        part = part.strip()
+        if not part:
             continue
-        weekend = [str(x) for x in dates if x.weekday() >= 5]
-        q_months = {x.month for x in dates}
-        a_months = {MONTHS[m.lower()] for m, _, _ in DATE_RE.findall(row["answer"])}
-        foreign = sorted(a_months - q_months) if a_months else []
-        if weekend or foreign:
-            found.append(
-                {"question_id": q, "weekend_dates": weekend, "foreign_answer_months": foreign}
-            )
-    return found
+        mult = re.search(r"\*\s*(\d+)\s*$", part)
+        name = re.sub(r"\*\s*\d+\s*$", "", part).strip().split("/")[-1]
+        calls[name] = calls.get(name, 0) + (int(mult.group(1)) if mult else 1)
+    return calls
 
 
-def chart(path, title, rows, legend, unit=None, note=None):
-    """Accessible stacked horizontal bars, all labels are XML escaped."""
-    width, left, right, row_height = 1050, 330, 100, 39
-    maximum = max((sum(values) for _, values in rows), default=1) or 1
-
-    lx, ly, row_y = 20, 54, 79
-    legend_items = []
-    for i, name in enumerate(legend):
-        w = max(150, len(name) * 8 + 40)
-        if lx + w > width - 20 and lx > 20:
-            lx, ly, row_y = 20, ly + 18, row_y + 18
-        legend_items.append((i, lx, ly, name))
-        lx += w
-    extra = 34 if (unit or note) else 0
-    height = row_y + row_height * len(rows) + 21 + extra
-
-    def label(x, y, value, **attrs):
-        extra = " ".join(f'{k.replace("_", "-")}="{v}"' for k, v in attrs.items())
-        return f'<text x="{x}" y="{y}" {extra}>{html.escape(str(value))}</text>'
-
-    out = [
-        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
-        f'viewBox="0 0 {width} {height}" role="img" aria-labelledby="title">',
-        f'<title id="title">{html.escape(title)}</title>',
-        '<rect width="100%" height="100%" fill="white"/>',
-        '<g font-family="Arial, sans-serif" font-size="14" fill="#243447">',
-        label(20, 26, title, font_size="19", font_weight="bold"),
-    ]
-    for i, x, y, name in legend_items:
-        out.extend(
-            [
-                f'<rect x="{x}" y="{y - 11}" width="12" height="12" fill="{COLORS[i]}"/>',
-                label(x + 18, y, name),
-            ]
-        )
-    for i, (name, values) in enumerate(rows):
-        y = row_y + i * row_height
-        out.append(label(left - 14, y + 17, name, text_anchor="end"))
-        x = float(left)
-        for j, v in enumerate(values):
-            bar_width = (width - left - right) * v / maximum
-            if v:
-                rect = f'<rect x="{x:.3f}" y="{y}" width="{bar_width:.3f}" height="24"'
-                out.append(rect + f' fill="{COLORS[j]}"/>')
-                if bar_width > 22:
-                    cx = round(x + bar_width / 2, 3)
-                    out.append(label(cx, y + 17, v, text_anchor="middle", fill="white"))
-            x += bar_width
-        out.append(label(round(x + 8, 3), y + 17, sum(values)))
-    fy = row_y + row_height * len(rows) + 14
-    if note:
-        out.append(label(20, fy, note, font_size="12", fill="#57606a"))
-        fy += 16
-    if unit:
-        out.append(label(20, fy, unit, font_size="12", fill="#57606a"))
-    out.extend(["</g>", "</svg>"])
-    path.write_text("\n".join(out) + "\n", encoding="utf-8")
-
-
-def write_json(path, value):
-    text = json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
-    path.write_text(text, encoding="utf-8")
-
-
-def analyze(data, output):
-    output.mkdir(parents=True, exist_ok=True)
-    diagrams = output.parent / "diagrams"
-    diagrams.mkdir(parents=True, exist_ok=True)
+def load_tasks(mcpverse):
     rows = []
-    source_quality = {}
-    for kind in ("invariant", "sensitive"):
-        path = data / f"mcpverse_time_{kind}_v1.1.csv"
-        with path.open(encoding="utf-8-sig", newline="") as stream:
-            part = list(csv.DictReader(stream))
-        source_quality[kind] = {
-            "rows": len(part),
-            "missing_by_field": {key: sum(not row[key].strip() for row in part) for key in part[0]},
-            "exact_duplicate_rows": len(part) - len({json.dumps(r, sort_keys=True) for r in part}),
+    for name in ("mcpverse_time_invariant_v1.1.csv", "mcpverse_time_sensitive_v1.1.csv"):
+        with open(mcpverse / "mcpverse" / "data" / name, newline="", encoding="utf-8") as f:
+            rows += list(csv.DictReader(f))
+    return rows
+
+
+def funnel(rows, c):
+    """Apply the selection in the order the author describes it, one reason per task."""
+    keyed = set(c["REQUIRED_KEYS"])
+    steps = [
+        ("unavailable", "сервис из Китая или нужен ключ, которого нет"),
+        ("broken", "портал открытых данных не отвечает"),
+        ("code", "нужно исполнять код"),
+        ("defect", "эталон противоречит вопросу или неверен"),
+        ("outside", "не складываются в истории бенчмарка"),
+    ]
+    hits = Counter()
+    for r in rows:
+        qid, need = r["question_id"], task_servers(r) - {"code"}
+        flags = {
+            "unavailable": bool(need & (c["CN_ONLY_SERVERS"] | keyed)),
+            "broken": bool(need & c["BROKEN_SERVERS"]),
+            "code": not need,
+            "defect": qid in c["DEFECT_QIDS"],
+            "outside": qid not in c["STORY_OF"],
         }
-        rows.extend(dict(row, source_kind=kind) for row in part)
-    ids = Counter(row["question_id"] for row in rows)
-    assert not any(n > 1 for n in ids.values()), "Duplicate task IDs"
-    tasks = {row["question_id"]: row for row in rows}
-    story_of = {q: story for story, qs in STORIES.items() for q in qs}
-    assert sum(map(len, STORIES.values())) == len(story_of), "Overlapping stories"
-    assert set(story_of) <= set(tasks), "Unknown story task"
-    assert all(r["complexity"] in {"L1", "L2", "L3"} for r in rows)
-    assert all(r["eval_method"] in {"eval_script", "llm_as_a_judge"} for r in rows)
-    assert all(bool(r["answer"].strip()) == (r["source_kind"] == "invariant") for r in rows)
-    assert not (set(story_of) & REMOVED_FROM_COVERAGE)
+        hits[sum(flags[k] for k in ("unavailable", "broken", "code", "defect"))] += 1
+        r["status"] = next((k for k, _ in steps if flags[k]), "scored")
+        r["story"] = c["STORY_OF"].get(qid)
+    left, out = len(rows), [("Все задачи MCPVerse v1.1", len(rows), None)]
+    for key, why in steps:
+        n = sum(r["status"] == key for r in rows)
+        left -= n
+        out.append((why, left, n))
+    keyed_only = sum(
+        bool(task_servers(r) & keyed) and not task_servers(r) & c["CN_ONLY_SERVERS"] for r in rows
+    )
+    return out, {"tasks_hit_by_several_filters": hits[2] + hits[3], "keyed_not_cn": keyed_only}
 
-    cohort = []
-    for q, row in tasks.items():
-        reasons = [EXCLUSIONS[s] for s in sorted(servers(row) & set(EXCLUSIONS))]
-        if reasons:
-            status = "excluded"
-        elif q in REMOVED_FROM_COVERAGE:
-            status = "coverage_removed"
-        elif q not in story_of:
-            status = "outside_stories"
-        elif q in NOT_SCORED:
-            status = "covered_not_scored"
-        else:
-            status = "scored"
-        cohort.append(
-            {
-                "question_id": q,
-                "source_kind": row["source_kind"],
-                "servers": sorted(servers(row)),
-                "story": story_of.get(q),
-                "status": status,
-                "policy_reasons": reasons,
-                "defect": DEFECTS.get(q),
-            }
-        )
-    runnable = {r["question_id"] for r in cohort if r["status"] != "excluded"}
-    story_ids = set(story_of)
-    scored = story_ids - NOT_SCORED
-    assert story_ids <= runnable
-    assert (len(tasks), len(runnable), len(story_ids), len(scored)) == (163, 77, 59, 58)
 
-    full = read_json(data / "tool_full.json")["mcpServers"]
-    config = read_json(data / "opencode.json")
-    configured = set(config["mcp"]["servers"])
-    smoke = read_json(data / "smoke.json")
-    connected = {name for name, item in smoke["servers"].items() if item["opencode"] == "connected"}
-    needed = set().union(*(servers(tasks[q]) for q in story_ids))
-    all_needed = set().union(*(servers(row) for row in rows)) - {"code"}
-    connected_story = needed & connected
-    tool_count = sum(smoke["servers"][s].get("tools") or 0 for s in connected)
-    story_tool_count = sum(smoke["servers"][s].get("tools") or 0 for s in connected_story)
-    named_tools = set().union(*(tools(tasks[q]) for q in story_ids))
+def reference_kind(r):
+    if r["time-sensitive"] == "Yes":
+        return "computed"
+    if r["eval_method"] == "eval_script":
+        return "file"
+    return "text"
 
-    results = []
-    result_sources = {}
-    for name in ("baseline-glm-results.jsonl", "baseline-glm-sens-results.jsonl"):
-        records = read_jsonl(data / name)
-        assert len({r["question_id"] for r in records}) == len(records)
-        assert all(r["question_id"] in tasks for r in records)
-        result_sources[name] = {
-            "n": len(records),
-            "status": dict(Counter(r["status"] for r in records)),
-        }
-        results.extend(records)
-    assert len({r["question_id"] for r in results}) == len(results)
-    ok = {r["question_id"]: r for r in results if r["status"] == "ok"}
-    metrics = read_json(data / "baseline-metrics.json")
-    assert set(metrics) == set(ok), "Metrics and completed results differ"
-    assert all(metrics[q]["answer"] == ok[q]["answer"] for q in metrics)
-    assert all(abs(metrics[q]["seconds"] - ok[q]["seconds"]) < 0.01 for q in metrics)
 
-    def behavior(q):
-        m = metrics[q]
-        if sum(m["mcp_calls"].values()):
-            return "mcp"
-        if sum(m["native"].values()):
-            return "native_without_mcp"
-        if m["searches"]:
-            return "search_only"
-        return "no_recorded_calls"
+def reference_basis(r):
+    """Where the right answer comes from. Decides whether and how a reference can go stale."""
+    if r["eval_method"] == "eval_script":
+        return "script"
+    if r["time-sensitive"] == "Yes":
+        return "run_day"
+    if task_servers(r) <= LOCAL_SERVERS | CALC_SERVERS:
+        return "local"
+    return "external"
 
-    def called_servers(q):
-        return {name.split(".")[0] for name, count in metrics[q]["mcp_calls"].items() if count}
 
-    per_story = {}
-    for story, qs in STORIES.items():
-        per_story[story] = {
-            "task_ids": qs,
-            "n": len(qs),
-            "scored": len(set(qs) & scored),
-            "sensitive": sum(tasks[q]["source_kind"] == "sensitive" for q in qs),
-            "complexity": dict(Counter(tasks[q]["complexity"] for q in qs)),
-            "servers": sorted(set().union(*(servers(tasks[q]) for q in qs))),
-            "completed": len(set(qs) & set(ok)),
-            "behavior": dict(Counter(behavior(q) for q in qs if q in metrics)),
-        }
+def jaccard_matrix(texts):
+    toks = [set(re.findall(r"\w+", t.lower())) for t in texts]
+    n = len(toks)
+    m = np.eye(n)
+    for i, j in itertools.combinations(range(n), 2):
+        m[i, j] = m[j, i] = len(toks[i] & toks[j]) / len(toks[i] | toks[j])
+    return m
 
-    score_sources = {}
-    for name in ("smoke-glm-scores.jsonl", "baseline-glm-sens-scores.jsonl"):
-        records = read_jsonl(data / name)
-        assert len({r["question_id"] for r in records}) == len(records)
-        valid = [r for r in records if type(r["score"]) in (int, float) and r["score"] in (0, 1)]
-        valid_story = [r for r in valid if r["question_id"] in scored]
-        score_sources[name] = {
-            "n": len(records),
-            "valid": len(valid),
-            "pass": sum(r["score"] for r in valid),
-            "fail": sum(r["score"] == 0 for r in valid),
-            "null_ids": [r["question_id"] for r in records if r["score"] is None],
-            "methods": dict(Counter(r["method"] for r in records)),
-            "valid_scored_story": len(valid_story),
-            "pass_scored_story": sum(r["score"] for r in valid_story),
-            "reference_dates": sorted({r["ref_date"] for r in valid if r.get("ref_date")}),
-            "provenance_has_session_id": all("session_id" in r for r in records),
-        }
 
-    # What the snapshot itself says about the two weekday references.
-    calendar_checks = []
-    for rec in read_jsonl(data / "baseline-glm-sens-scores.jsonl"):
-        if rec["question_id"] in {"Q306", "Q307"}:
-            today = date.fromisoformat(rec["ref_date"])
-            monday = today - timedelta(days=today.weekday() + 7)
-            expected = monday + timedelta(days=6 if rec["question_id"] == "Q306" else 0)
-            calendar_checks.append(
-                {
-                    "question_id": rec["question_id"],
-                    "expected_date": str(expected),
-                    "reference_matches": str(expected) in rec["ref_answer"],
+def families(m, thr):
+    parent = list(range(len(m)))
+
+    def find(i):
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+
+    for i, j in zip(*np.where(np.triu(m, 1) >= thr), strict=True):
+        parent[find(i)] = find(j)
+    return len({find(i) for i in range(len(m))})
+
+
+def hour_pillar(day_stem, hour):
+    """Hour pillar by the five-rats rule: the day stem fixes the stem of the rat hour."""
+    branch = ((hour + 1) // 2) % 12
+    return STEMS[(STEMS.index(day_stem) % 5 * 2 + branch) % 10] + BRANCHES[branch]
+
+
+def defect_checks(rows):
+    """Turn the three known reference defects into rules that run on every task."""
+    out = {"weekend_market_dates": [], "bazi_hour_mismatch": [], "julian_day_dates": {}}
+    for r in rows:
+        q, a = r["question"], r["answer"]
+        if task_servers(r) & MARKET_SERVERS:
+            for mon, day, year in DATE_RE.findall(q):
+                d = dt.datetime.strptime(f"{mon} {day} {year}", "%B %d %Y").date()
+                if d.weekday() >= 5:
+                    out["weekend_market_dates"].append(f"{r['question_id']} {d.isoformat()}")
+            q_dates, a_dates = set(DATE_RE.findall(q)), set(DATE_RE.findall(a))
+            if q_dates and a_dates and not a_dates & q_dates:
+                out.setdefault("answer_dates_not_in_question", []).append(r["question_id"])
+        pillars = re.fullmatch(r"(?:[一-鿿]{2}\s+){2}([一-鿿]{2})\s+([一-鿿]{2})", a.strip())
+        clock = re.search(r"\b(\d{1,2}):(\d{2})", q)
+        if pillars and clock:
+            day, ref_hour = pillars.groups()
+            hour = int(clock.group(1))
+            if hour_pillar(day[0], hour) != ref_hour:
+                rec = {
+                    "qid": r["question_id"],
+                    "stated_time": clock.group(0),
+                    "pillar_for_stated_time": hour_pillar(day[0], hour),
+                    "reference_pillar": ref_hour,
                 }
-            )
-
-    excluded_by_server = Counter()
-    for row in rows:
-        blocked = sorted(servers(row) & set(EXCLUSIONS))
-        if blocked:
-            excluded_by_server[blocked[0]] += 1
-
-    # Servers called in completed runs beyond the story annotation.
-    annotated_by_task = {q: servers(tasks[q]) for q in story_ids}
-    outside_calls = []
-    probe_contradicts = []
-    for q in sorted(story_ids, key=lambda x: int(x[1:])):
-        if q not in metrics:
-            continue
-        used = called_servers(q)
-        extra = sorted(used - annotated_by_task[q])
-        if extra:
-            outside_calls.append(
-                {"question_id": q, "annotated": sorted(annotated_by_task[q]), "extra_called": extra}
-            )
-        for s in used:
-            if s in smoke["servers"] and smoke["servers"][s]["opencode"] != "connected":
-                probe_contradicts.append({"question_id": q, "server": s})
-
-    # Text quality of questions inside stories.
-    near_pairs = []
-    for story, qs in STORIES.items():
-        bags = {q: word_bag(tasks[q]["question"]) for q in qs}
-        for i, left in enumerate(qs):
-            for right in qs[i + 1 :]:
-                union = len(bags[left] | bags[right])
-                score = len(bags[left] & bags[right]) / union if union else 0
-                if score >= 0.55:
-                    near_pairs.append(
-                        {"story": story, "a": left, "b": right, "jaccard": round(score, 3)}
+                born = DATE_RE.search(q)
+                if born and "UTC+8" in q:
+                    d = dt.datetime.strptime(" ".join(born.groups()), "%B %d %Y")
+                    local = d.replace(hour=hour, minute=int(clock.group(2)))
+                    offset = local.replace(tzinfo=ZoneInfo("Asia/Shanghai")).utcoffset()
+                    shift = (offset or dt.timedelta(hours=8)) - dt.timedelta(hours=8)
+                    rec["shanghai_utc_offset_hours"] = (offset or shift).total_seconds() / 3600
+                    rec["pillar_if_time_is_shanghai_local"] = hour_pillar(
+                        day[0], (local - shift).hour
                     )
-    near_pairs.sort(key=lambda item: -item["jaccard"])
-    mixed_quotes = [
-        q
-        for q in story_ids
-        if re.search(r"`[^'`\n]*'", tasks[q]["question"])
-        or re.search(r"'[^'`\n]*`", tasks[q]["question"])
-    ]
-    stray_paren = [
-        q
-        for q in story_ids
-        if re.search(r"\)\s*\.\s*$", tasks[q]["question"])
-        and tasks[q]["question"].count("(") < tasks[q]["question"].count(")")
-    ]
+                out["bazi_hour_mismatch"].append(rec)
+        jd = re.search(r"Julian Day (\d+(?:\.\d+)?)", q)
+        if jd:
+            date = dt.date(1970, 1, 1) + dt.timedelta(days=float(jd.group(1)) - 2440587.5)
+            out["julian_day_dates"][r["question_id"]] = {"date": date.isoformat(), "ref": a}
+    return out
 
-    baseline = {}
-    for scope, scope_ids in [
-        ("all_completed", set(ok)),
-        ("stories_completed", set(ok) & story_ids),
-        ("scored_stories_completed", set(ok) & scored),
-    ]:
-        baseline[scope] = {
-            "n": len(scope_ids),
-            "behavior": dict(Counter(behavior(q) for q in scope_ids)),
-            "seconds": numeric_summary([metrics[q]["seconds"] for q in scope_ids]),
-            "input_tokens": numeric_summary([metrics[q]["tin"] for q in scope_ids]),
-            "output_tokens": numeric_summary([metrics[q]["tout"] for q in scope_ids]),
-            "reasoning_tokens": numeric_summary([metrics[q]["treas"] for q in scope_ids]),
+
+def translation_checks(tasks, ru):
+    issues = []
+    for r in tasks:
+        tr = ru.get(r["question_id"])
+        if not tr or not tr["question_ru"].strip():
+            issues.append(f"{r['question_id']}: no translation")
+            continue
+        if tr["question_en"] != r["question"]:
+            issues.append(f"{r['question_id']}: English text differs from MCPVerse")
+        en, ruq = tr["question_en"], tr["question_ru"]
+        if Counter(re.findall(r"\d+(?:\.\d+)?", en)) != Counter(re.findall(r"\d+(?:\.\d+)?", ruq)):
+            issues.append(f"{r['question_id']}: numbers differ")
+        for path in re.findall(r"\./[\w./{}-]*\w", en):
+            if path not in ruq:
+                issues.append(f"{r['question_id']}: path {path} lost")
+    return issues
+
+
+def baseline_skill_checks(runner, tasks):
+    tools_by_story = defaultdict(set)
+    for r in tasks:
+        tools_by_story[r["story"]] |= set(parse_tools(r["tool"]))
+    out = {}
+    for path in sorted((runner / "skills-baseline-v1").glob("*/SKILL.md")):
+        story = path.parent.name.removesuffix("-v1")
+        text = path.read_text(encoding="utf-8")
+        out[story] = {
+            "words": len(text.split()),
+            "says_no_environment_contract": bool(
+                re.search(r"контракт окружения не передан|привязк\w*[^.\n]*отсутствует", text, re.I)
+            ),
+            "benchmark_tool_names_mentioned": sorted(
+                t for t in tools_by_story[story] if re.search(rf"\b{re.escape(t)}\b", text)
+            ),
         }
-    no_mcp = (q for q in story_ids & set(metrics) if behavior(q) != "mcp")
-    baseline["story_ids_without_mcp"] = sorted(no_mcp)
-    baseline["scored_story_ids_without_completed_run"] = sorted(scored - set(ok))
-    baseline["result_sources"] = result_sources
-    baseline["scores_by_source"] = score_sources
-    with_result = {r["question_id"] for r in results}
-    baseline["source_tasks_without_any_result"] = sorted(set(tasks) - with_result)
-    baseline["calls_beyond_annotation"] = outside_calls
-    baseline["called_servers_failed_in_probe"] = probe_contradicts
+    return out
 
-    stats = {
-        "cohorts": {
-            "source": len(tasks),
-            "invariant": source_quality["invariant"]["rows"],
-            "sensitive": source_quality["sensitive"]["rows"],
-            "runnable_by_policy": len(runnable),
-            "stories": len(story_ids),
-            "scored": len(scored),
-            "outside_stories": len(runnable - story_ids - REMOVED_FROM_COVERAGE),
-            "excluded_by_server": dict(excluded_by_server),
-            "defects": DEFECTS,
-            "removed_from_coverage": sorted(REMOVED_FROM_COVERAGE),
-            "covered_but_not_scored": sorted(NOT_SCORED),
-        },
-        "quality": {
-            "sources": source_quality,
-            "duplicate_ids": [],
-            "unknown_complexities": [],
-            "weekday_references_in_snapshot": calendar_checks,
-            "financial_date_checks": check_financial_dates(
-                tasks, {q for q in story_ids if story_of.get(q) == "stock_quote_compare"}
+
+def server_pinning(tool_json, servers):
+    out = {}
+    for name in sorted(servers):
+        spec = tool_json[name]
+        args = spec.get("args", [])
+        if spec.get("command") == "uv" and "--directory" in args:
+            out[name] = "vendored"
+            continue
+        pkg = next((a for a in args if not a.startswith("-") and a not in {"tool", "run"}), "")
+        out[name] = "pinned" if re.search(r"@\d|==", pkg) else f"unpinned ({pkg})"
+    return out
+
+
+def structure_checks(rows, tool_json):
+    nums = [int(r["question_id"][1:]) for r in rows]
+    used = set().union(*(task_servers(r) for r in rows)) - {"code"}
+    empty = {
+        col: [r["question_id"] for r in rows if not (r[col] or "").strip()]
+        for col in ("question", "MCP", "tool", "complexity", "answer", "eval_method")
+    }
+    return {
+        "rows": len(rows),
+        "unique_ids": len(set(nums)),
+        "id_range": [min(nums), max(nums)],
+        "empty_cells": {k: len(v) for k, v in empty.items()},
+        "empty_answers_all_run_day": all(
+            r["time-sensitive"] == "Yes" for r in rows if r["question_id"] in empty["answer"]
+        ),
+        "servers_used": len(used),
+        "servers_configured": len(tool_json),
+        "servers_missing_in_config": sorted(used - set(tool_json)),
+    }
+
+
+def template_checks(rows, templates, selected):
+    """Static check of run-day templates: same question, same server as the task. Not executed."""
+    sens = [r for r in rows if r["time-sensitive"] == "Yes"]
+    by_q = {" ".join(r["question"].split()): r["question_id"] for r in sens}
+    out = {"total": len(sens), "missing": [], "label_differs": {}, "other_server": []}
+    out["selected_same_server"] = 0
+    for r in sens:
+        path = templates / f"t{r['get_answer_id']}.py"
+        if not path.exists():
+            out["missing"].append(r["question_id"])
+            continue
+        src = path.read_text(encoding="utf-8")
+        label = next(
+            (
+                " ".join(ast.literal_eval(n.value).split())
+                for n in ast.parse(src).body
+                if isinstance(n, ast.Assign) and getattr(n.targets[0], "id", "") == "question"
             ),
-            "near_duplicate_questions": near_pairs,
-            "mixed_quote_questions": sorted(mixed_quotes),
-            "stray_paren_questions": sorted(stray_paren),
-            "missing_required_runtime_artifacts": [
-                "tasks-ru.jsonl",
-                "reference evaluator source",
-                "eval_script source",
-                "test_data fixtures",
-            ],
-        },
-        "distributions": {
-            name: {
-                "n": len(qs),
-                "complexity": dict(Counter(tasks[q]["complexity"] for q in qs)),
-                "evaluation": dict(Counter(tasks[q]["eval_method"] for q in qs)),
-                "source_kind": dict(Counter(tasks[q]["source_kind"] for q in qs)),
-                "answer_kind_heuristic": dict(Counter(answer_kind(tasks[q]) for q in qs)),
-                "unique_annotated_tools_per_task": dict(Counter(len(tools(tasks[q])) for q in qs)),
+            None,
+        )
+        if label != " ".join(r["question"].split()):
+            ref = re.search(r'reference\s*=\s*"([^"]*)"', src)
+            out["label_differs"][r["question_id"]] = {
+                "label_is_question_of": by_q.get(label),
+                "reference_text": ref.group(1) if ref else None,
             }
-            for name, qs in [("runnable", runnable), ("stories", story_ids), ("scored", scored)]
+        called = set(re.findall(r'"mcp":\s*"([^"]+)"', src))
+        if called and called <= task_servers(r):
+            out["selected_same_server"] += r["question_id"] in selected
+        else:
+            out["other_server"].append(r["question_id"])
+    return out
+
+
+def recompute_local_refs(mcpverse, by_id):
+    """Recompute references of local-fixture tasks from the files, without any server.
+
+    Each check compares the literal reading of the question with the reference. Where the
+    folder holds more than the question assumes, the other readings are kept as well.
+    """
+    td = mcpverse / "mcpverse" / "test_data"
+    ans = {q: r["answer"].strip() for q, r in by_id.items()}
+    ex, tree = td / "filesystem" / "example", td / "filesystem" / "tree_example"
+    trunc = td / "txt_truncated"
+    top = sorted(trunc.glob("*.txt"))
+    deep = sorted(trunc.rglob("*.txt"))
+    deepest = max((f for f in tree.rglob("*") if f.is_file()), key=lambda f: len(f.parts))
+    e_files = {f.name: f.read_text(encoding="utf-8").strip() for f in sorted(ex.glob("e*"))}
+
+    def nature(files, ascii_bounds=True):
+        pat = re.compile(r"\bNature\b", re.A if ascii_bounds else 0)
+        return sum(len(pat.findall(f.read_text(encoding="utf-8"))) for f in files)
+
+    def preview(files):
+        text = "\n---\n".join(f.read_text(encoding="utf-8")[:100] for f in files)
+        return len(text.encode("utf-8"))
+
+    def biggest(files):
+        return max(files, key=lambda f: f.stat().st_size).name
+
+    def reports(files):
+        return [f.name for f in files if "年报" in f.read_text(encoding="utf-8")]
+
+    db = sqlite3.connect(f"file:{td / 'california_schools.db'}?mode=ro", uri=True)
+    tables = sorted(x[0] for x in db.execute("SELECT name FROM sqlite_master WHERE type='table'"))
+    best = db.execute("SELECT sname FROM satscores ORDER BY AvgScrMath DESC LIMIT 1").fetchone()[0]
+    db.close()
+    wb = openpyxl.load_workbook(td / "excel" / "excel_test.xlsx", read_only=True)
+    five = {
+        ws.title: [c for c in next(ws.iter_rows(values_only=True)) if c is not None]
+        for ws in wb.worksheets
+        if ws.max_column == 5
+    }
+    wb.close()
+    checks = {
+        "Q87": (e_files["e1.txt"] in ans["Q87"], {}),
+        "Q89": (ans["Q89"] == str(sum(1 for _ in ex.iterdir())), {}),
+        "Q91": (
+            next(tree.rglob("t1-1-1.txt")).relative_to(td).as_posix() in ans["Q91"],
+            {},
+        ),
+        "Q92": (ans["Q92"].startswith(str((ex / "e1.txt").stat().st_size)), {}),
+        "Q131": (all(k in ans["Q131"] and v in ans["Q131"] for k, v in e_files.items()), {}),
+        "Q132": (deepest.read_text(encoding="utf-8").strip() in ans["Q132"], {}),
+        "Q172": (ans["Q172"] == str(len(b"Test Data")), {}),
+        "Q173": (
+            reports(top) == [ans["Q173"]],
+            {"literal": reports(top), "with_subfolders": reports(deep)},
+        ),
+        "Q174": (
+            biggest(top) == ans["Q174"],
+            {"literal": biggest(top), "with_subfolders": biggest(deep)},
+        ),
+        "Q175": (
+            ans["Q175"] == str(nature(top)),
+            {
+                "literal": nature(top),
+                "with_subfolders": nature(deep),
+                "unicode_word_bounds": nature(top, False),
+            },
+        ),
+        "Q176": (
+            ans["Q176"].split()[0] == str(preview(top)),
+            {"literal": preview(top), "with_subfolders": preview(deep)},
+        ),
+        "Q21": (ans["Q21"] == best, {}),
+        "Q22": (all(t in ans["Q22"] for t in tables), {}),
+        "Q128": (
+            len(five) == 1
+            and all(str(x) in ans["Q128"] for x in [*five, *next(iter(five.values()))]),
+            {},
+        ),
+    }
+    tracked = subprocess.run(
+        ["git", "-C", str(mcpverse), "ls-files", "--", str(trunc.relative_to(mcpverse))],
+        capture_output=True,
+        text=True,
+    ).stdout.split()
+    extra = [f.relative_to(trunc).as_posix() for f in deep if f.parent != trunc]
+    return {
+        "recomputed": len(checks),
+        "match": sum(ok for ok, _ in checks.values()),
+        "mismatch": sorted(q for q, (ok, _) in checks.items() if not ok),
+        "ambiguous": {
+            q: alt
+            for q, (_, alt) in checks.items()
+            if len({json.dumps(v) for v in alt.values()}) > 1
         },
-        "per_story": per_story,
-        "environment": {
-            "configured": len(configured),
-            "connected": len(connected),
-            "required_by_source": len(all_needed),
-            "required_by_stories": len(needed),
-            "connected_story_servers": len(connected_story),
-            "disconnected_story_servers": sorted(needed - connected),
-            "config_server_sets_equal": set(full) == configured,
-            "connected_tools": tool_count,
-            "connected_story_tools": story_tool_count,
-            "named_story_tools": len(named_tools),
-            "non_story_server_tools": tool_count - story_tool_count,
-            "connected_without_tool_inventory": sorted(
-                s for s in connected if smoke["servers"][s].get("tools") is None
-            ),
-            "schema_bytes_connected": sum(
-                smoke["servers"][s].get("schema_bytes") or 0 for s in connected
-            ),
-            "schema_bytes_story": sum(
-                smoke["servers"][s].get("schema_bytes") or 0 for s in connected_story
-            ),
-            "snapshot_permissions_are_allow_all": config.get("permissions")
-            == [{"action": "*", "resource": "*", "effect": "allow"}],
-        },
-        "baseline": baseline,
-        "design_sensitivity_not_observed_results": {
-            "n_scored_tasks": len(scored),
-            "n_story_clusters": len(STORIES),
-            "one_task_pp": 100 / len(scored),
-            "planned_runs": len(scored) * 3 * 3,
-            "illustrations_single_binary_run": [
-                {
-                    "improved": a,
-                    "regressed": b,
-                    "difference_pp": 100 * (a - b) / len(scored),
-                    "mcnemar_exact_two_sided_p": exact_mcnemar(a, b),
-                }
-                for a, b in [(9, 0), (25, 16)]
-            ],
-        },
+        "txt_truncated_top_files": len(top),
+        "txt_truncated_extra_files": extra,
+        "extra_files_in_commit": [
+            x for x in extra if f"{trunc.relative_to(mcpverse).as_posix()}/{x}" in tracked
+        ],
+        "read_calls_in_tool_column": {q: parse_tools(by_id[q]["tool"]) for q in ("Q173", "Q174")},
     }
-    manifest = {
-        "files": [
-            dict(
-                name=f.name,
-                bytes=f.stat().st_size,
-                sha256=hashlib.sha256(f.read_bytes()).hexdigest(),
-            )
-            for f in sorted(data.iterdir())
-            if f.is_file()
-        ],
-        "analysis_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-        "selection_policy": EXCLUSIONS,
-        "story_map": STORIES,
-        "quantiles": "type 7 linear interpolation",
-        "network_used": False,
-    }
-    write_json(output / "eda-stats.json", stats)
-    write_json(output / "input-manifest.json", manifest)
-    write_json(output / "cohort.json", cohort)
-    chart(
-        diagrams / "funnel.svg",
-        "Отбор задач для сравнения навыков",
-        [
-            ("Исходные задачи", [len(tasks)]),
-            ("Доступны для выполнения", [len(runnable)]),
-            ("Входят в девять историй", [len(story_ids)]),
-            ("Включены в расчёт метрик", [len(scored)]),
-        ],
-        ["Число задач"],
+
+
+def unused_fixtures(mcpverse, rows, tool_json):
+    """Top-level fixture files that no task question and no server config points to."""
+    td = mcpverse / "mcpverse" / "test_data"
+    cfg = json.dumps(tool_json)
+    return sorted(
+        f.name
+        for f in td.iterdir()
+        if f.is_file() and f.name not in cfg and not any(f.name in r["question"] for r in rows)
     )
-    chart(
-        diagrams / "stories.svg",
-        "Заявленная сложность задач в девяти историях",
-        [
-            (STORY_LABELS[s], [v["complexity"].get(level, 0) for level in ("L1", "L2", "L3")])
-            for s, v in per_story.items()
-        ],
-        ["Простые", "Средние", "Сложные"],
-        unit="Число задач",
-    )
-    chart(
-        diagrams / "baseline.svg",
-        "Использование инструментов в предварительном прогоне: 59 задач",
-        [
-            (
-                STORY_LABELS[s],
-                [
-                    v["behavior"].get("mcp", 0),
-                    v["behavior"].get("native_without_mcp", 0),
-                    v["behavior"].get("search_only", 0) + v["behavior"].get("no_recorded_calls", 0),
-                    v["n"] - v["completed"],
-                ],
-            )
-            for s, v in per_story.items()
-        ],
-        [
-            "Были вызовы подключённых источников",
-            "Только встроенные инструменты среды",
-            "Только поиск инструментов либо вызовы не записаны",
-            "Нет завершённого результата",
-        ],
-        unit="Число задач",
-    )
-    chart(
-        diagrams / "servers.svg",
-        "Источники данных и инструментов: настройка и подключение",
-        [
-            ("Указаны в настройках ассистента", [len(configured)]),
-            ("Успешно подключены при проверке", [len(connected)]),
-            ("Нужны для задач девяти историй", [len(needed)]),
-            ("Успешно подключены из необходимых историям", [len(connected_story)]),
-        ],
-        ["Число источников"],
-        note="Успешное подключение не гарантирует выполнение запросов",
-    )
-    scored_dist = stats["distributions"]["scored"]
-    answer_labels = {
-        "Проверка файла": "Проверка состояния файла",
-        "Вычисляемый эталон": "Эталон вычисляется в день прогона",
-    }
-    chart(
-        diagrams / "answer-types.svg",
-        "Эталоны и способы проверки 58 оцениваемых задач",
-        [
-            (answer_labels.get(k, k), [v])
-            for k, v in sorted(scored_dist["answer_kind_heuristic"].items(), key=lambda x: -x[1])
-        ],
-        ["Число задач"],
-    )
-    score_labels = {
-        "smoke-glm-scores": "Пробная часть прогона",
-        "baseline-glm-sens-scores": "Задачи, чувствительные ко времени",
-    }
-    chart(
-        diagrams / "score-coverage.svg",
-        "Наличие оценок и результаты предварительного прогона",
-        [
-            (
-                score_labels.get(name.removesuffix(".jsonl"), name),
-                [v["pass"], v["fail"], len(v["null_ids"])],
-            )
-            for name, v in score_sources.items()
-        ],
-        ["Правильный ответ", "Неверный ответ", "Нет оценки: не удалось вычислить эталон"],
-        unit="Число задач",
-    )
-    summary = {
-        "cohorts": stats["cohorts"],
-        "baseline_stories": baseline["stories_completed"],
-        "score_sources": score_sources,
-    }
-    print(json.dumps(summary, ensure_ascii=False, indent=2))
+
+
+def style(ax):
+    for side in ("top", "right"):
+        ax.spines[side].set_visible(False)
+    for side in ("left", "bottom"):
+        ax.spines[side].set_color(GREY)
+    ax.tick_params(colors=INK2, labelsize=9)
+    ax.set_axisbelow(True)
+
+
+def save(fig, name):
+    fig.savefig(FIG / name, dpi=150, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+
+
+def plot_funnel(steps):
+    left = [s[1] for s in steps]
+    fig, ax = plt.subplots(figsize=(8.5, 3.6))
+    style(ax)
+    y = np.arange(len(steps))[::-1]
+    ax.barh(y, left, color=[GREY] + [BLUE] * (len(steps) - 2) + [AQUA], height=0.62)
+    for yi, (lab, n, drop) in zip(y, steps, strict=True):
+        txt = f"{n}" if drop is None else f"{n}   (−{drop})"
+        ax.text(n + 2, yi, txt, va="center", fontsize=9, color=INK)
+        ax.text(
+            -3,
+            yi,
+            lab if drop is None else f"− {lab}",
+            va="center",
+            ha="right",
+            fontsize=9,
+            color=INK,
+        )
+    ax.set_yticks([])
+    ax.set_xlim(0, 185)
+    ax.set_xlabel("Осталось задач после шага", color=INK2, fontsize=9)
+    ax.grid(axis="x", color="#ecebe7", linewidth=0.7)
+    save(fig, "funnel.png")
+
+
+def plot_stacked(tasks, key, cats, colors, legend, name, xlabel):
+    size = Counter(t["story"] for t in tasks)  # insertion order breaks ties stably
+    stories = sorted(size, key=lambda s: -size[s])
+    fig, ax = plt.subplots(figsize=(8.5, 3.9))
+    style(ax)
+    y = np.arange(len(stories))[::-1]
+    left = np.zeros(len(stories))
+    for cat, col, lab in zip(cats, colors, legend, strict=True):
+        vals = np.array([sum(t["story"] == s and key(t) == cat for t in tasks) for s in stories])
+        ax.barh(
+            y, vals, left=left, color=col, height=0.62, label=lab, edgecolor="white", linewidth=1.5
+        )
+        left += vals
+    for yi, total in zip(y, left, strict=True):
+        ax.text(total + 0.2, yi, f"{int(total)}", va="center", fontsize=9, color=INK)
+    ax.set_yticks(y, [STORY_RU[s] for s in stories], fontsize=9, color=INK)
+    ax.set_xlabel(xlabel, color=INK2, fontsize=9)
+    ax.grid(axis="x", color="#ecebe7", linewidth=0.7)
+    ax.legend(frameon=False, fontsize=8.5, loc="lower right", labelcolor=INK)
+    save(fig, name)
+
+
+def plot_similarity(m, tasks):
+    fig, ax = plt.subplots(figsize=(7.2, 6.4))
+    im = ax.imshow(m, cmap="Blues", vmin=0, vmax=1)
+    bounds, start, ticks = [], 0, []
+    stories = list(dict.fromkeys(t["story"] for t in tasks))
+    for s in stories:
+        n = sum(t["story"] == s for t in tasks)
+        ticks.append(start + n / 2 - 0.5)
+        start += n
+        bounds.append(start - 0.5)
+    for b in bounds[:-1]:
+        ax.axhline(b, color=ORANGE, linewidth=0.8)
+        ax.axvline(b, color=ORANGE, linewidth=0.8)
+    ax.set_xticks(ticks, [STORY_RU[s] for s in stories], rotation=60, ha="right", fontsize=8)
+    ax.set_yticks(ticks, [STORY_RU[s] for s in stories], fontsize=8)
+    ax.tick_params(length=0, colors=INK)
+    cb = fig.colorbar(im, ax=ax, fraction=0.04, pad=0.02)
+    cb.set_label("Сходство формулировок (доля общих слов)", color=INK2, fontsize=8.5)
+    cb.ax.tick_params(labelsize=8, colors=INK2)
+    for side in ax.spines.values():
+        side.set_visible(False)
+    save(fig, "similarity.png")
+
+
+def plot_coverage(have):
+    labels = list(have)
+    need = [20, 10, 10, 10]
+    fig, ax = plt.subplots(figsize=(8.5, 2.9))
+    style(ax)
+    y = np.arange(len(labels))[::-1]
+    ax.barh(y + 0.18, need, height=0.34, color=GREY, label="Требование раздела 2.1")
+    ax.barh(y - 0.18, list(have.values()), height=0.34, color=BLUE, label="Есть в бенчмарке")
+    for yi, v in zip(y, have.values(), strict=True):
+        ax.text(v + 0.6, yi - 0.18, str(v), va="center", fontsize=9, color=INK)
+    ax.set_yticks(y, labels, fontsize=9, color=INK)
+    ax.set_xlabel("Задач", color=INK2, fontsize=9)
+    ax.legend(frameon=False, fontsize=8.5, loc="lower right", labelcolor=INK)
+    ax.grid(axis="x", color="#ecebe7", linewidth=0.7)
+    save(fig, "requirements.png")
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--data", type=Path, default=DEFAULT_DATA)
-    parser.add_argument("--output", type=Path, default=HERE)
-    args = parser.parse_args()
-    same_dir = args.data.resolve() == args.output.resolve()
-    output_in_data = args.data.resolve() in args.output.resolve().parents
-    if same_dir or output_in_data:
-        parser.error("Output must be outside the source data directory")
-    analyze(args.data.resolve(), args.output.resolve())
+    p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    p.add_argument("--mcpverse", type=Path, required=True)
+    p.add_argument("--runner", type=Path, required=True)
+    a = p.parse_args()
+    manifest = json.loads((HERE / "inputs.json").read_text(encoding="utf-8"))
+    verify_inputs({"mcpverse": a.mcpverse, "runner": a.runner}, manifest)
+    FIG.mkdir(exist_ok=True)
+
+    c = runner_constants(a.runner / "runner.py")
+    rows = load_tasks(a.mcpverse)
+    steps, overlap = funnel(rows, c)
+    by_id = {r["question_id"]: r for r in rows}
+    order = c["STORY_QIDS"].split(",")
+    tasks = [by_id[q] for q in order if by_id[q]["status"] == "scored"]
+    ru = {}
+    for line in (a.runner / "tasks-ru.jsonl").read_text(encoding="utf-8").splitlines():
+        if line.strip():
+            rec = json.loads(line)
+            ru[rec["question_id"]] = rec
+    tool_json = json.loads((a.mcpverse / "mcpverse" / "tool_full.json").read_text())["mcpServers"]
+    refusal = [
+        json.loads(line)
+        for line in (a.runner / "tasks-refusal.jsonl").read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+    bad = [
+        t["id"]
+        for t in refusal
+        if t["category"] not in REFUSAL_RU
+        or (t["source_qid"] is not None and t["source_qid"] not in by_id)
+        or (t["source_qid"] is None and t["story"] is not None)
+        or t["expected_outcome"] != "refusal"
+        or (t["story"] is not None and t["story"] != by_id[t["source_qid"]]["story"])
+    ]
+    if bad:
+        sys.exit(f"malformed refusal tasks {bad}")
+
+    with open(HERE / "selection.jsonl", "w", encoding="utf-8") as f:
+        for r in rows:
+            f.write(
+                json.dumps(
+                    {
+                        k: r[k]
+                        for k in (
+                            "question_id",
+                            "MCP",
+                            "complexity",
+                            "eval_method",
+                            "time-sensitive",
+                            "status",
+                            "story",
+                        )
+                    },
+                    ensure_ascii=False,
+                )
+                + "\n"
+            )
+
+    per_story = {}
+    for s in dict.fromkeys(t["story"] for t in tasks):
+        ts = [t for t in tasks if t["story"] == s]
+        calls = [sum(parse_tools(t["tool"]).values()) for t in ts]
+        per_story[s] = {
+            "tasks": len(ts),
+            "servers": sorted(set().union(*(task_servers(t) for t in ts))),
+            "distinct_tools": len(set().union(*(parse_tools(t["tool"]) for t in ts))),
+            "complexity": dict(sorted(Counter(t["complexity"] for t in ts).items())),
+            "reference": dict(Counter(reference_kind(t) for t in ts)),
+            "reference_basis": dict(Counter(reference_basis(t) for t in ts)),
+            "tasks_with_2plus_calls": sum(x >= 2 for x in calls),
+        }
+
+    text_refs = [t for t in tasks if reference_kind(t) == "text"]
+    lengths = [len(t["answer"].strip()) for t in text_refs]
+    sim = jaccard_matrix([t["question"] for t in tasks])
+    same = np.array([[x["story"] == y["story"] for y in tasks] for x in tasks])
+    iu = np.triu_indices(len(tasks), 1)
+    pairs_hi = [(sim[i, j], same[i, j]) for i, j in zip(*iu, strict=True) if sim[i, j] >= 0.5]
+    narrow = [r for r in rows if r["status"] == "outside"]
+    code_rows = [r for r in rows if r["status"] == "code"]
+    code_ext = Counter(
+        (re.findall(r"\.(xlsx|docx|pdf|pptx|md|txt|json)\b", r["question"]) or ["none"])[0]
+        for r in code_rows
+    )
+    templates = a.mcpverse / "mcpverse" / "templates"
+    computed = [t for t in tasks if reference_kind(t) == "computed"]
+    raw_tools = [t["tool"] for t in tasks]
+
+    refusal_by_cat = Counter(t["category"] for t in refusal)
+    have = {"Задачи с эталоном": len(tasks)} | {
+        ru: refusal_by_cat[cat] for cat, ru in REFUSAL_RU.items()
+    }
+    refusal_refs = [t["question_id"] for t in tasks if REFUSAL_RE.search(t["answer"])]
+    if refusal_refs:
+        sys.exit(f"unexpected refusal references {refusal_refs}: update the coverage figure")
+
+    sizes = [v["tasks"] for v in per_story.values()]
+    # Outside tasks: a server with 3+ of them is a candidate tuning story, the rest are single
+    # tasks. A story with swapped references keeps too few tasks and is not used at all.
+    by_server = Counter(r["MCP"] for r in narrow)
+    template_info = template_checks(rows, templates, {t["question_id"] for t in tasks})
+    swapped = sorted(q for q in template_info["label_differs"] if by_id[q]["status"] == "outside")
+    swapped_servers = {by_id[q]["MCP"] for q in swapped}
+    story_servers = {sv: n for sv, n in by_server.items() if n >= 3}
+    tuning_servers = {sv: n for sv, n in story_servers.items() if sv not in swapped_servers}
+    # Smallest per-story spread (SD of the gain) at which a gain equal to the threshold keeps
+    # the lower bound of the two-sided 90% bootstrap interval above zero (normal approximation).
+    z90, threshold_pp = 1.645, 15
+    # 95% interval of Cohen's kappa at kappa 0.8 and chance agreement 0.5 on n labelled answers.
+    kappa, p_e, n_judge = 0.8, 0.5, 100
+    p_o = kappa * (1 - p_e) + p_e
+    selected_servers = set().union(*(task_servers(t) for t in tasks))
+
+    stats = {
+        "funnel": [{"step": s, "left": n, "dropped": d} for s, n, d in steps],
+        "funnel_overlap": overlap,
+        "story_qids_listed": len(order),
+        "story_qids_not_scored": [q for q in order if by_id[q]["status"] != "scored"],
+        "outside_story_by_server": dict(Counter(r["MCP"] for r in narrow)),
+        "outside_story_qids": [r["question_id"] for r in narrow],
+        "scored_tasks": len(tasks),
+        "per_story": per_story,
+        "complexity": dict(sorted(Counter(t["complexity"] for t in tasks).items())),
+        "complexity_by_status": {
+            st: dict(sorted(Counter(r["complexity"] for r in rows if r["status"] == st).items()))
+            for st in dict.fromkeys(r["status"] for r in rows)
+        },
+        "reference_kind": dict(Counter(reference_kind(t) for t in tasks)),
+        "reference_basis": dict(Counter(reference_basis(t) for t in tasks)),
+        "story_sizes": sizes,
+        "effective_stories": round(sum(sizes) ** 2 / sum(x * x for x in sizes), 2),
+        "one_task_pp": round(100 / len(tasks), 2),
+        "story_server": {s: v["servers"] for s, v in per_story.items()},
+        "servers_shared_by_stories": {
+            sv: [s for s, v in per_story.items() if sv in v["servers"]]
+            for sv in sorted(selected_servers)
+            if sum(sv in v["servers"] for v in per_story.values()) > 1
+        },
+        "multi_server_tasks": [t["question_id"] for t in tasks if len(task_servers(t)) > 1],
+        "writes_files_but_judged_by_text": [
+            t["question_id"]
+            for t in tasks
+            if "./outputs/" in t["question"] and t["eval_method"] != "eval_script"
+        ],
+        "computed_refs_with_template": sum(
+            (templates / f"t{t['get_answer_id']}.py").exists() for t in computed
+        ),
+        "templates": template_info,
+        "structure": structure_checks(rows, tool_json),
+        "local_reference_recompute": recompute_local_refs(a.mcpverse, by_id),
+        "unused_fixtures": unused_fixtures(a.mcpverse, rows, tool_json),
+        "computed_refs_relative_to_run_date": [t["question_id"] for t in computed],
+        "text_reference_count": len(text_refs),
+        "text_reference_short": sum(x <= SHORT_REF for x in lengths),
+        "text_reference_length_median": float(np.median(lengths)),
+        "text_reference_length_max": max(lengths),
+        "cjk_in_question": sum(bool(CJK_RE.search(t["question"])) for t in tasks),
+        "cjk_in_reference": sum(bool(CJK_RE.search(t["answer"])) for t in tasks),
+        "tool_label_formats": {
+            "with_server_prefix": sum("/" in x for x in raw_tools),
+            "with_multiplier": sum("*" in x for x in raw_tools),
+            "tasks_2plus_expected_calls": sum(sum(parse_tools(x).values()) >= 2 for x in raw_tools),
+        },
+        "near_duplicates_jaccard_ge_0.5": {
+            "pairs": len(pairs_hi),
+            "within_story": int(sum(s for _, s in pairs_hi)),
+            "max_cross_story": round(float(sim[~same].max()), 2),
+            "families": families(sim, 0.5),
+        },
+        "defect_checks": defect_checks(rows),
+        "q162_title_checked_manually": {
+            "apod_2020_06_01": "The Lively Center of the Lagoon Nebula",
+            "how": "redirect of apod.nasa.gov/apod/ap200601.html, 2026-11-14",
+        },
+        "translation_issues": translation_checks(tasks, ru),
+        "translations_total": len(ru),
+        "baseline_skills": baseline_skill_checks(a.runner, tasks),
+        "server_pinning": server_pinning(tool_json, selected_servers),
+        "selected_servers_env": {
+            sv: sorted(tool_json[sv].get("env", {}))
+            for sv in sorted(selected_servers)
+            if tool_json[sv].get("env")
+        },
+        "code_tasks_by_file_type": dict(code_ext),
+        "refusal_references": refusal_refs,
+        "runs_per_benchmark_pass": len(tasks) * 3 * 3,
+        "refusal_tasks": len(refusal),
+        "refusal_by_category": {cat: refusal_by_cat[cat] for cat in REFUSAL_RU},
+        "refusal_by_story": dict(Counter(t["story"] or "outside" for t in refusal)),
+        "refusal_by_source_status": dict(
+            Counter(by_id[t["source_qid"]]["status"] if t["source_qid"] else "new" for t in refusal)
+        ),
+        "runs_refusal": len(refusal) * 3 * 3,
+        "runs_outside_story_control": len(narrow) * 3 * 3,
+        "runs_per_test_pass": (len(tasks) + len(refusal)) * 3 * 3,
+        "tuning_from_outside": {
+            "stories": tuning_servers,
+            "single_tasks": len(narrow) - sum(story_servers.values()),
+            "excluded_swapped_reference": swapped,
+            "stories_not_used": {
+                sv: n for sv, n in story_servers.items() if sv not in tuning_servers
+            },
+            "tasks_used": sum(tuning_servers.values()),
+        },
+        "gain_detectable": {
+            "threshold_pp": threshold_pp,
+            "max_story_spread_pp": {
+                n: round(threshold_pp * n**0.5 / z90, 1) for n in (len(per_story), 18)
+            },
+        },
+        "judge_check": {
+            "answers": n_judge,
+            "kappa": kappa,
+            "chance_agreement": p_e,
+            "kappa_ci95_halfwidth": round(1.96 * (p_o * (1 - p_o) / n_judge) ** 0.5 / (1 - p_e), 3),
+        },
+    }
+    (HERE / "stats.json").write_text(
+        json.dumps(stats, ensure_ascii=False, indent=1) + "\n", encoding="utf-8"
+    )
+
+    plot_funnel(steps)
+    plot_stacked(
+        tasks,
+        lambda t: t["complexity"],
+        ["L1", "L2", "L3"],
+        [AQUA, BLUE, ORANGE],
+        ["L1", "L2", "L3"],
+        "complexity.png",
+        "Задач (уровень сложности в разметке MCPVerse)",
+    )
+    plot_stacked(
+        tasks,
+        reference_basis,
+        ["local", "external", "run_day", "script"],
+        [AQUA, BLUE, ORANGE, GREY],
+        [
+            "из данных набора или расчёта",
+            "записан один раз с внешнего сервиса",
+            "считается в день прогона",
+            "файл проверяет программа",
+        ],
+        "references.png",
+        "Задач (откуда берётся эталон)",
+    )
+    plot_similarity(sim, tasks)
+    plot_coverage(have)
+    print(json.dumps({k: stats[k] for k in ("funnel", "scored_tasks")}, ensure_ascii=False))
 
 
 if __name__ == "__main__":

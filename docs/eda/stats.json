@@ -1,0 +1,633 @@
+{
+ "funnel": [
+  {
+   "step": "Все задачи MCPVerse v1.1",
+   "left": 163,
+   "dropped": null
+  },
+  {
+   "step": "сервис из Китая или нужен ключ, которого нет",
+   "left": 126,
+   "dropped": 37
+  },
+  {
+   "step": "портал открытых данных не отвечает",
+   "left": 121,
+   "dropped": 5
+  },
+  {
+   "step": "нужно исполнять код",
+   "left": 75,
+   "dropped": 46
+  },
+  {
+   "step": "эталон противоречит вопросу или неверен",
+   "left": 72,
+   "dropped": 3
+  },
+  {
+   "step": "не складываются в истории бенчмарка",
+   "left": 58,
+   "dropped": 14
+  }
+ ],
+ "funnel_overlap": {
+  "tasks_hit_by_several_filters": 0,
+  "keyed_not_cn": 0
+ },
+ "story_qids_listed": 59,
+ "story_qids_not_scored": [
+  "Q200"
+ ],
+ "outside_story_by_server": {
+  "fetch": 3,
+  "calculator": 1,
+  "world_bank": 1,
+  "wikipedia": 3,
+  "nasa-mcp": 1,
+  "investor": 1,
+  "whois": 1,
+  "time": 3
+ },
+ "outside_story_qids": [
+  "Q7",
+  "Q58",
+  "Q84",
+  "Q125",
+  "Q126",
+  "Q127",
+  "Q152",
+  "Q160",
+  "Q191",
+  "Q195",
+  "Q225",
+  "Q306",
+  "Q307",
+  "Q308"
+ ],
+ "scored_tasks": 58,
+ "per_story": {
+  "hf_dataset_inspect": {
+   "tasks": 9,
+   "servers": [
+    "dataset-viewer"
+   ],
+   "distinct_tools": 7,
+   "complexity": {
+    "L1": 6,
+    "L2": 2,
+    "L3": 1
+   },
+   "reference": {
+    "text": 9
+   },
+   "reference_basis": {
+    "external": 9
+   },
+   "tasks_with_2plus_calls": 3
+  },
+  "paper_fact_lookup": {
+   "tasks": 7,
+   "servers": [
+    "arxiv-mcp-server",
+    "paper_search_server"
+   ],
+   "distinct_tools": 5,
+   "complexity": {
+    "L1": 1,
+    "L2": 4,
+    "L3": 2
+   },
+   "reference": {
+    "text": 7
+   },
+   "reference_basis": {
+    "external": 7
+   },
+   "tasks_with_2plus_calls": 4
+  },
+  "files_find_read": {
+   "tasks": 9,
+   "servers": [
+    "filesystem"
+   ],
+   "distinct_tools": 6,
+   "complexity": {
+    "L1": 4,
+    "L2": 2,
+    "L3": 3
+   },
+   "reference": {
+    "text": 9
+   },
+   "reference_basis": {
+    "local": 9
+   },
+   "tasks_with_2plus_calls": 4
+  },
+  "files_prepare": {
+   "tasks": 5,
+   "servers": [
+    "filesystem"
+   ],
+   "distinct_tools": 7,
+   "complexity": {
+    "L1": 1,
+    "L3": 4
+   },
+   "reference": {
+    "file": 3,
+    "text": 2
+   },
+   "reference_basis": {
+    "script": 3,
+    "local": 2
+   },
+   "tasks_with_2plus_calls": 4
+  },
+  "git_repo_state": {
+   "tasks": 4,
+   "servers": [
+    "git"
+   ],
+   "distinct_tools": 5,
+   "complexity": {
+    "L1": 3,
+    "L3": 1
+   },
+   "reference": {
+    "text": 4
+   },
+   "reference_basis": {
+    "local": 4
+   },
+   "tasks_with_2plus_calls": 1
+  },
+  "table_data_lookup": {
+   "tasks": 3,
+   "servers": [
+    "excel",
+    "filesystem",
+    "sqlite"
+   ],
+   "distinct_tools": 4,
+   "complexity": {
+    "L1": 2,
+    "L3": 1
+   },
+   "reference": {
+    "text": 3
+   },
+   "reference_basis": {
+    "local": 3
+   },
+   "tasks_with_2plus_calls": 1
+  },
+  "stock_quote_compare": {
+   "tasks": 12,
+   "servers": [
+    "kospi-kosdaq",
+    "yahoo-finance"
+   ],
+   "distinct_tools": 9,
+   "complexity": {
+    "L1": 3,
+    "L2": 7,
+    "L3": 2
+   },
+   "reference": {
+    "text": 4,
+    "computed": 8
+   },
+   "reference_basis": {
+    "external": 4,
+    "run_day": 8
+   },
+   "tasks_with_2plus_calls": 9
+  },
+  "app_store_research": {
+   "tasks": 6,
+   "servers": [
+    "appinsightmcp"
+   ],
+   "distinct_tools": 2,
+   "complexity": {
+    "L1": 2,
+    "L2": 4
+   },
+   "reference": {
+    "computed": 6
+   },
+   "reference_basis": {
+    "run_day": 6
+   },
+   "tasks_with_2plus_calls": 4
+  },
+  "bazi_reading": {
+   "tasks": 3,
+   "servers": [
+    "Bazi"
+   ],
+   "distinct_tools": 2,
+   "complexity": {
+    "L2": 3
+   },
+   "reference": {
+    "text": 3
+   },
+   "reference_basis": {
+    "local": 3
+   },
+   "tasks_with_2plus_calls": 3
+  }
+ },
+ "complexity": {
+  "L1": 22,
+  "L2": 22,
+  "L3": 14
+ },
+ "complexity_by_status": {
+  "unavailable": {
+   "L1": 9,
+   "L2": 11,
+   "L3": 17
+  },
+  "outside": {
+   "L1": 6,
+   "L2": 5,
+   "L3": 3
+  },
+  "code": {
+   "L1": 11,
+   "L2": 17,
+   "L3": 18
+  },
+  "scored": {
+   "L1": 22,
+   "L2": 22,
+   "L3": 14
+  },
+  "defect": {
+   "L1": 1,
+   "L2": 1,
+   "L3": 1
+  },
+  "broken": {
+   "L1": 2,
+   "L2": 3
+  }
+ },
+ "reference_kind": {
+  "text": 41,
+  "file": 3,
+  "computed": 14
+ },
+ "reference_basis": {
+  "external": 20,
+  "local": 21,
+  "script": 3,
+  "run_day": 14
+ },
+ "story_sizes": [
+  9,
+  7,
+  9,
+  5,
+  4,
+  3,
+  12,
+  6,
+  3
+ ],
+ "effective_stories": 7.48,
+ "one_task_pp": 1.72,
+ "story_server": {
+  "hf_dataset_inspect": [
+   "dataset-viewer"
+  ],
+  "paper_fact_lookup": [
+   "arxiv-mcp-server",
+   "paper_search_server"
+  ],
+  "files_find_read": [
+   "filesystem"
+  ],
+  "files_prepare": [
+   "filesystem"
+  ],
+  "git_repo_state": [
+   "git"
+  ],
+  "table_data_lookup": [
+   "excel",
+   "filesystem",
+   "sqlite"
+  ],
+  "stock_quote_compare": [
+   "kospi-kosdaq",
+   "yahoo-finance"
+  ],
+  "app_store_research": [
+   "appinsightmcp"
+  ],
+  "bazi_reading": [
+   "Bazi"
+  ]
+ },
+ "servers_shared_by_stories": {
+  "filesystem": [
+   "files_find_read",
+   "files_prepare",
+   "table_data_lookup"
+  ]
+ },
+ "multi_server_tasks": [
+  "Q128"
+ ],
+ "writes_files_but_judged_by_text": [
+  "Q172",
+  "Q176"
+ ],
+ "computed_refs_with_template": 14,
+ "templates": {
+  "total": 37,
+  "missing": [],
+  "label_differs": {
+   "Q306": {
+    "label_is_question_of": "Q307",
+    "reference_text": "The date of last week's Sunday in UTC is: "
+   },
+   "Q307": {
+    "label_is_question_of": "Q306",
+    "reference_text": "The date of last week's Monday in UTC is: "
+   }
+  },
+  "other_server": [],
+  "selected_same_server": 14
+ },
+ "structure": {
+  "rows": 163,
+  "unique_ids": 163,
+  "id_range": [
+   1,
+   387
+  ],
+  "empty_cells": {
+   "question": 0,
+   "MCP": 0,
+   "tool": 0,
+   "complexity": 0,
+   "answer": 37,
+   "eval_method": 0
+  },
+  "empty_answers_all_run_day": true,
+  "servers_used": 26,
+  "servers_configured": 63,
+  "servers_missing_in_config": []
+ },
+ "local_reference_recompute": {
+  "recomputed": 14,
+  "match": 14,
+  "mismatch": [],
+  "ambiguous": {
+   "Q173": {
+    "literal": [
+     "CN-16.txt"
+    ],
+    "with_subfolders": [
+     "CN-16.txt",
+     "preview.txt"
+    ]
+   },
+   "Q175": {
+    "literal": 5,
+    "with_subfolders": 9,
+    "unicode_word_bounds": 3
+   },
+   "Q176": {
+    "literal": 3357,
+    "with_subfolders": 3586
+   }
+  },
+  "txt_truncated_top_files": 14,
+  "txt_truncated_extra_files": [
+   "snapshots/preview.txt"
+  ],
+  "extra_files_in_commit": [
+   "snapshots/preview.txt"
+  ],
+  "read_calls_in_tool_column": {
+   "Q173": {
+    "read_file": 13
+   },
+   "Q174": {
+    "read_file": 13
+   }
+  }
+ },
+ "unused_fixtures": [
+  "Annual_Report_2025.pptx",
+  "Chinook_Sqlite.sqlite",
+  "Marketing_Strategy_2025.pptx",
+  "PrintDB.sql",
+  "admission_en.xlsx",
+  "goodfile.txt",
+  "northwind_data.sql"
+ ],
+ "computed_refs_relative_to_run_date": [
+  "Q291",
+  "Q292",
+  "Q293",
+  "Q294",
+  "Q295",
+  "Q296",
+  "Q297",
+  "Q304",
+  "Q251",
+  "Q252",
+  "Q253",
+  "Q275",
+  "Q276",
+  "Q277"
+ ],
+ "text_reference_count": 41,
+ "text_reference_short": 13,
+ "text_reference_length_median": 94.0,
+ "text_reference_length_max": 653,
+ "cjk_in_question": 1,
+ "cjk_in_reference": 1,
+ "tool_label_formats": {
+  "with_server_prefix": 9,
+  "with_multiplier": 13,
+  "tasks_2plus_expected_calls": 33
+ },
+ "near_duplicates_jaccard_ge_0.5": {
+  "pairs": 19,
+  "within_story": 19,
+  "max_cross_story": 0.28,
+  "families": 44
+ },
+ "defect_checks": {
+  "weekend_market_dates": [
+   "Q200 2025-08-09",
+   "Q200 2025-08-10"
+  ],
+  "bazi_hour_mismatch": [
+   {
+    "qid": "Q121",
+    "stated_time": "01:31",
+    "pillar_for_stated_time": "乙丑",
+    "reference_pillar": "甲子",
+    "shanghai_utc_offset_hours": 9.0,
+    "pillar_if_time_is_shanghai_local": "甲子"
+   }
+  ],
+  "julian_day_dates": {
+   "Q162": {
+    "date": "2020-06-01",
+    "ref": "Galaxy Wars: M81 and M82"
+   }
+  },
+  "answer_dates_not_in_question": [
+   "Q200"
+  ]
+ },
+ "q162_title_checked_manually": {
+  "apod_2020_06_01": "The Lively Center of the Lagoon Nebula",
+  "how": "redirect of apod.nasa.gov/apod/ap200601.html, 2026-11-14"
+ },
+ "translation_issues": [],
+ "translations_total": 163,
+ "baseline_skills": {
+  "app_store_research": {
+   "words": 672,
+   "says_no_environment_contract": true,
+   "benchmark_tool_names_mentioned": []
+  },
+  "bazi_reading": {
+   "words": 488,
+   "says_no_environment_contract": true,
+   "benchmark_tool_names_mentioned": []
+  },
+  "files_find_read": {
+   "words": 634,
+   "says_no_environment_contract": true,
+   "benchmark_tool_names_mentioned": []
+  },
+  "files_prepare": {
+   "words": 614,
+   "says_no_environment_contract": true,
+   "benchmark_tool_names_mentioned": []
+  },
+  "git_repo_state": {
+   "words": 604,
+   "says_no_environment_contract": true,
+   "benchmark_tool_names_mentioned": []
+  },
+  "hf_dataset_inspect": {
+   "words": 646,
+   "says_no_environment_contract": true,
+   "benchmark_tool_names_mentioned": []
+  },
+  "paper_fact_lookup": {
+   "words": 602,
+   "says_no_environment_contract": true,
+   "benchmark_tool_names_mentioned": []
+  },
+  "stock_quote_compare": {
+   "words": 629,
+   "says_no_environment_contract": true,
+   "benchmark_tool_names_mentioned": []
+  },
+  "table_data_lookup": {
+   "words": 525,
+   "says_no_environment_contract": true,
+   "benchmark_tool_names_mentioned": []
+  }
+ },
+ "server_pinning": {
+  "Bazi": "unpinned (bazi-mcp)",
+  "appinsightmcp": "unpinned (@jeromyfu/app-insight-mcp)",
+  "arxiv-mcp-server": "unpinned (arxiv-mcp-server)",
+  "dataset-viewer": "vendored",
+  "excel": "unpinned (@negokaz/excel-mcp-server)",
+  "filesystem": "unpinned (@modelcontextprotocol/server-filesystem)",
+  "git": "unpinned (mcp-server-git)",
+  "kospi-kosdaq": "unpinned (kospi_kosdaq_stock_server)",
+  "paper_search_server": "vendored",
+  "sqlite": "vendored",
+  "yahoo-finance": "unpinned (mcp-yahoo-finance)"
+ },
+ "selected_servers_env": {
+  "excel": [
+   "EXCEL_MCP_PAGING_CELLS_LIMIT"
+  ],
+  "paper_search_server": [
+   "SEMANTIC_SCHOLAR_API_KEY"
+  ]
+ },
+ "code_tasks_by_file_type": {
+  "xlsx": 15,
+  "none": 1,
+  "md": 5,
+  "txt": 1,
+  "docx": 8,
+  "pdf": 7,
+  "pptx": 8,
+  "json": 1
+ },
+ "refusal_references": [],
+ "runs_per_benchmark_pass": 522,
+ "refusal_tasks": 30,
+ "refusal_by_category": {
+  "no_data": 10,
+  "no_access": 10,
+  "out_of_domain": 10
+ },
+ "refusal_by_story": {
+  "hf_dataset_inspect": 4,
+  "paper_fact_lookup": 2,
+  "files_find_read": 5,
+  "git_repo_state": 3,
+  "table_data_lookup": 1,
+  "stock_quote_compare": 3,
+  "app_store_research": 1,
+  "files_prepare": 1,
+  "outside": 10
+ },
+ "refusal_by_source_status": {
+  "scored": 20,
+  "unavailable": 10
+ },
+ "runs_refusal": 270,
+ "runs_outside_story_control": 126,
+ "runs_per_test_pass": 792,
+ "tuning_from_outside": {
+  "stories": {
+   "fetch": 3,
+   "wikipedia": 3
+  },
+  "single_tasks": 5,
+  "excluded_swapped_reference": [
+   "Q306",
+   "Q307"
+  ],
+  "stories_not_used": {
+   "time": 3
+  },
+  "tasks_used": 6
+ },
+ "gain_detectable": {
+  "threshold_pp": 15,
+  "max_story_spread_pp": {
+   "9": 27.4,
+   "18": 38.7
+  }
+ },
+ "judge_check": {
+  "answers": 100,
+  "kappa": 0.8,
+  "chance_agreement": 0.5,
+  "kappa_ci95_halfwidth": 0.118
+ }
+}
